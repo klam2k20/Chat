@@ -14,6 +14,15 @@ function Login() {
     setShow(!show);
   };
 
+  const submitForm = () => {
+
+  };
+
+  const setGuestCredentials = () => {
+    setEmail('guestLogin@gmail.com');
+    setPassword('password');
+  };
+
   return (
     <VStack spacing="0.5rem" mt="0.5rem">
       <FormControl id="email" isRequired>
@@ -39,10 +48,10 @@ function Login() {
           </InputRightAddon>
         </InputGroup>
       </FormControl>
-      <Button w="100%" colorScheme="linkedin" style={{ marginTop: '1rem' }}>
+      <Button w="100%" colorScheme="linkedin" style={{ marginTop: '1rem' }} onClick={submitForm}>
         Login
       </Button>
-      <Button w="100%" colorScheme="red">
+      <Button w="100%" colorScheme="red" onClick={setGuestCredentials}>
         Guest Login Credentials
       </Button>
     </VStack>
