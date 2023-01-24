@@ -9,7 +9,9 @@ const PORT = process.env.PORT || 8080;
 
 // Middleware
 app.use(cors());
-app.use(require('./routes/router'));
+app.use(express.json());
+// Mounts the middleware at path /api/user, then router sets the subpath
+app.use('/api/user', require('./routes/userRouter'));
 
 dbConnection
   .then((db) => {
