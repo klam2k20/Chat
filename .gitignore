@@ -27,6 +27,7 @@ yarn-error.log*
 server/data
 
 # Configurations
+client/.eslintrc.json
 server/.eslintrc.json
 .vscode
 
