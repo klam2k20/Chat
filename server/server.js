@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config({ path: 'config.env' });
+const { notFound404 } = require('./middleware/middleware');
 const dbConnection = require('./db/connection');
 
 const app = express();
@@ -12,6 +13,8 @@ app.use(cors());
 app.use(express.json());
 // Mounts the middleware at path /api/user, then router sets the subpath
 app.use('/api/user', require('./routes/userRouter'));
+
+app.use(notFound404);
 
 dbConnection
   .then((db) => {
