@@ -1,6 +1,7 @@
 const { User } = require('../model/models');
 const { generateJWT } = require('../utilities/auth');
 
+// POST /api/user/
 const registerUser = async (req, res) => {
   if (!Object.keys(req.body).length) return res.status(400).json({ message: 'Registration Body is Required' });
   const {
@@ -33,6 +34,7 @@ const registerUser = async (req, res) => {
   });
 };
 
+// POST /api/user/login
 const loginUser = async (req, res) => {
   if (!Object.keys(req.body).length) return res.status(400).json({ message: 'Login Body is Required' });
   const { email, password } = req.body;
@@ -49,4 +51,20 @@ const loginUser = async (req, res) => {
   return res.status(401).json({ message: 'Invalid Email or Password' });
 };
 
-module.exports = { registerUser, loginUser };
+// GET /api/user?search=query
+const filterUsers = async (req, res) => {
+  const filter = req.query.search;
+  if (!filter) return res.status(400).json({ message: 'Search Query Missing' });
+  // Find with an empty body returns none -({})
+  // Find without a body returns all -()
+  const query = filter ? {
+    $or: [
+      { name: { $regex: filter, $options: '-i' } },
+      { email: { $regex: filter, $options: '-i' } },
+    ],
+  } : {};
+  const users = await User.find(query).find({ _id: { $ne: req.user._id } });
+  res.json(users);
+};
+
+module.exports = { registerUser, loginUser, filterUsers };
