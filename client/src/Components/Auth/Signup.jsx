@@ -94,8 +94,7 @@ function Signup() {
         navigate('/chats');
       } catch (err) {
         toast({
-          title: 'Regristration Error',
-          description: err.message,
+          title: 'Registration Error',
           status: 'error',
           duration: 5000,
           isClosable: true,
