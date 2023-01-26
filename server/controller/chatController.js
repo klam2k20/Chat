@@ -30,8 +30,18 @@ const createChat = async (req, res) => {
   });
 };
 
-const getUserChats = (req, res) => {
-  console.log(req, res);
+const getUserChats = async (req, res) => {
+  const chats = await Chat.find({ users: req.user._id })
+    .populate('users', '-password')
+    .populate('latestMessage', '-chat')
+    .populate('groupAdmin', '-password')
+    .sort({ updatedAt: -1 });
+
+  // chats = await User.populate(chats, {
+  // path: 'latestMessage.sender',
+  // select: 'name pic email',
+  // });
+  res.status(200).json(chats);
 };
 
 const createGroupChat = (req, res) => {
