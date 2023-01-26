@@ -13,6 +13,7 @@ app.use(cors());
 app.use(express.json());
 // Mounts the middleware at path /api/user, then router sets the subpath
 app.use('/api/user', require('./routes/userRouter'));
+app.use('/api/chat', require('./routes/chatRouter'));
 
 app.use(notFound404);
 
