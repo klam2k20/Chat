@@ -13,7 +13,7 @@ const authenicateToken = (req, res, next) => {
 };
 
 const notFound404 = (req, res, next) => {
-  res.status(404).json({ message: `API Path Unknown: ${req.originalUrl}` });
+  res.status(404).json({ message: `${req.method} is Unsupported at ${req.originalUrl}` });
   next();
 };
 
