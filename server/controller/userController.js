@@ -3,13 +3,13 @@ const { generateJWT } = require('../utilities/auth');
 
 // POST /api/user/
 const registerUser = async (req, res) => {
-  if (!Object.keys(req.body).length) return res.status(400).json({ message: 'Registration Body is Required' });
+  const errorMsg = 'Registering a User Requires a Name, Email, and Password';
   const {
     name, email, password, photo,
   } = req.body;
 
   // Validation
-  if (!name || !email || !password) return res.status(400).json({ message: 'Please Enter all Required Fields' });
+  if (!name || !email || !password) return res.status(400).json({ message: errorMsg });
   const userExists = await User.findOne({ email });
   if (userExists) return res.status(409).json({ message: 'Email Already Registered' });
 
@@ -36,8 +36,9 @@ const registerUser = async (req, res) => {
 
 // POST /api/user/login
 const loginUser = async (req, res) => {
-  if (!Object.keys(req.body).length) return res.status(400).json({ message: 'Login Body is Required' });
+  const errorMsg = 'Logging in a User Requires an Email and Password';
   const { email, password } = req.body;
+  if (!email || !password) return res.status(400).json({ message: errorMsg });
   const user = await User.findOne({ email });
   if (user && (await user.validatePassword(password))) {
     return res.status(200).json({
