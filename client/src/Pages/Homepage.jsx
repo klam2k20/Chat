@@ -15,11 +15,12 @@ import Signup from '../Components/Auth/Signup';
 import { useChat } from '../Context/ChatProvider';
 
 function Homepage() {
-  const { setLoggedIn } = useChat();
+  const { setUser, setLoggedIn } = useChat();
   const navigate = useNavigate();
   useEffect(() => {
     const userInfo = localStorage.getItem('user-info');
     if (userInfo) {
+      setUser(userInfo.data);
       navigate('/chats');
       setLoggedIn(true);
     }
