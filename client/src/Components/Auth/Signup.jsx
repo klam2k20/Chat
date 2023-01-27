@@ -11,6 +11,7 @@ import {
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useChat } from '../../Context/ChatProvider';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -20,6 +21,7 @@ function Signup() {
   const [setPhoto] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { setLoggedIn } = useChat();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -91,6 +93,7 @@ function Signup() {
         });
         localStorage.setItem('user-info', JSON.stringify(response));
         setLoading(false);
+        setLoggedIn(true);
         navigate('/chats');
       } catch (err) {
         toast({

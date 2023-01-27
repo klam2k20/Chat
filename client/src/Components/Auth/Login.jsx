@@ -6,12 +6,14 @@ import {
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useChat } from '../../Context/ChatProvider';
 
 function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { setLoggedIn } = useChat();
   const toast = useToast();
   const navigate = useNavigate();
 
@@ -36,6 +38,7 @@ function Login() {
         const response = await axios.post('http://localhost:8080/api/user/login', { email, password }, headers);
         localStorage.setItem('user-info', JSON.stringify(response));
         setLoading(false);
+        setLoggedIn(true);
         navigate('/chats');
       } catch (err) {
         toast({
@@ -82,10 +85,21 @@ function Login() {
           </InputRightAddon>
         </InputGroup>
       </FormControl>
-      <Button w="100%" colorScheme="linkedin" style={{ marginTop: '1rem' }} onClick={submitForm}>
+      <Button
+        w="100%"
+        colorScheme="linkedin"
+        style={{ marginTop: '1rem' }}
+        onClick={submitForm}
+        isLoading={loading}
+      >
         Login
       </Button>
-      <Button w="100%" colorScheme="red" onClick={setGuestCredentials} isLoading={loading}>
+      <Button
+        w="100%"
+        colorScheme="red"
+        onClick={setGuestCredentials}
+        isLoading={loading}
+      >
         Guest Login Credentials
       </Button>
     </VStack>
