@@ -42,6 +42,21 @@ const createOrFetchChat = (token, userId) => {
   return axios.post(baseUrl.concat('/api/chat'), { userId }, header);
 };
 
+const deleteUserChat = (token, chatId) => {
+  const header = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.delete(
+    baseUrl.concat(`/api/chat?id=${chatId}`),
+    header,
+  );
+};
+
 export {
-  loginUser, createUser, getUsers, getChats, createOrFetchChat,
+  loginUser,
+  createUser,
+  getUsers,
+  getChats,
+  createOrFetchChat,
+  deleteUserChat,
 };

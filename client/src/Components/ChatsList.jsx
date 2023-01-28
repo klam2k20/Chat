@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import { DeleteIcon } from '@chakra-ui/icons';
 import { getChatname } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
-import { getChats } from '../Utilities/apiRequests';
+import { getChats, deleteUserChat } from '../Utilities/apiRequests';
 
 function ChatsList() {
   const { user, chats, setChats } = useChat();
@@ -19,7 +19,7 @@ function ChatsList() {
         setChats(res.data);
       } catch (err) {
         toast({
-          title: 'Invalid Search',
+          title: 'Error While Fetching Chats',
           status: 'error',
           duration: 5000,
           isClosable: true,
@@ -48,10 +48,40 @@ function ChatsList() {
 }
 
 function Chat({ chat }) {
-  const { user, selectedChat, setSelectedChat } = useChat();
+  const {
+    user, selectedChat, setSelectedChat, chats, setChats,
+  } = useChat();
+  const toast = useToast();
 
   const selectChat = () => {
     setSelectedChat(chat);
+  };
+
+  const deleteChat = async () => {
+    try {
+      if (chat.groupChat && chat.groupAdmin._id !== user._id) {
+        toast({
+          title: 'You Aren\'t Group Admin',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+        return;
+      }
+      await deleteUserChat(user.token, chat._id);
+      if (selectedChat && selectChat._id === chat._id) setSelectedChat(null);
+      const updatedChats = chats.filter((c) => c._id !== chat._id);
+      setChats(updatedChats);
+    } catch (err) {
+      toast({
+        title: 'Error Deleting Chat',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+    }
   };
 
   return (
@@ -81,7 +111,7 @@ function Chat({ chat }) {
           </Text>
         </Box>
       </Button>
-      <IconButton _hover={{ color: 'white' }} bg="red.500" icon={<DeleteIcon />} />
+      <IconButton _hover={{ color: 'white' }} bg="red.500" icon={<DeleteIcon />} onClick={deleteChat} />
     </ButtonGroup>
   );
 }
@@ -92,6 +122,12 @@ Chat.propTypes = {
     chatName: PropTypes.string.isRequired,
     groupChat: PropTypes.bool.isRequired,
     latestMessage: PropTypes.string,
+    groupAdmin: PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      name: PropTypes.string.isRequired,
+      email: PropTypes.string.isRequired,
+      photo: PropTypes.string.isRequired,
+    }),
   }).isRequired,
 };
 

@@ -12,6 +12,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
+import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatProvider';
 import { getAvatarSrc } from '../Utilities/utilities';
 import ProfileModal from './ProfileModal';
@@ -19,10 +20,12 @@ import ProfileModal from './ProfileModal';
 function Header() {
   const { user, setLoggedIn } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
 
   const logout = () => {
     localStorage.clear();
     setLoggedIn(false);
+    navigate('/');
   };
 
   return (
