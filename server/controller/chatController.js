@@ -2,9 +2,11 @@ const { mongoose } = require('mongoose');
 const { Chat } = require('../model/models');
 
 const createChat = async (req, res) => {
-  const errorMsg = 'Creating a Chat Requires a User ID';
+  const missingFieldMsg = 'Creating a Chat Requires a User ID';
+  const conflictMsg = 'Creating a Chat Requires a User ID Besides Yours';
   const { userId } = req.body;
-  if (!userId) return res.status(400).json({ message: errorMsg });
+  if (userId === req.user._id.toString()) return res.status(400).json({ message: conflictMsg });
+  if (!userId) return res.status(400).json({ message: missingFieldMsg });
   const isChat = await Chat.find({
     isGroupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
@@ -60,10 +62,11 @@ const deleteUserChat = async (req, res) => {
 
 const createGroupChat = async (req, res) => {
   const missingRequiredMsg = 'Creating a Group Chat Requires a Chat Name and a List of User IDs';
-  const userIdsLengthMsg = 'Creating a Group Chat Requires at Least 2 Additional User IDs';
+  const userIdsLengthMsg = 'Creating a Group Chat Requires at Least 2 Additional User IDs Besides Yours';
   const { chatName, userIds } = req.body;
   if (!chatName || !userIds) return res.status(400).json({ message: missingRequiredMsg });
-  const allUserIds = JSON.parse(userIds);
+  let allUserIds = JSON.parse(userIds);
+  allUserIds = allUserIds.filter((id) => id !== req.user._id.toString());
   const allObjectIds = allUserIds.map((id) => mongoose.Types.ObjectId(id));
   allObjectIds.push(req.user._id);
   if (allObjectIds.length < 3) return res.status(400).json({ message: userIdsLengthMsg });
