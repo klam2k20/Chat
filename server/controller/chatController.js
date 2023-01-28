@@ -44,6 +44,20 @@ const getUserChats = async (req, res) => {
   res.status(200).json(chats);
 };
 
+const deleteUserChat = async (req, res) => {
+  const errorMsg = 'Deleting a Chat Requires a Chat ID';
+  const chatId = req.query.id;
+  if (!chatId) return res.status(400).json({ message: errorMsg });
+  try {
+    await Chat.deleteOne({ _id: chatId });
+    return res.status(200).json({ message: 'Chat Deleted Successfully' });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ message: `Error While Deleting Chat: ${err.message}` });
+  }
+};
+
 const createGroupChat = async (req, res) => {
   const missingRequiredMsg = 'Creating a Group Chat Requires a Chat Name and a List of User IDs';
   const userIdsLengthMsg = 'Creating a Group Chat Requires at Least 2 Additional User IDs';
@@ -130,5 +144,11 @@ const removeFromGroup = async (req, res) => {
 };
 
 module.exports = {
-  createChat, getUserChats, createGroupChat, renameChat, addToGroup, removeFromGroup,
+  createChat,
+  getUserChats,
+  deleteUserChat,
+  createGroupChat,
+  renameChat,
+  addToGroup,
+  removeFromGroup,
 };

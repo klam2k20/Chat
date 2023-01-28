@@ -54,14 +54,15 @@ const loginUser = async (req, res) => {
 
 // GET /api/user?search=query
 const filterUsers = async (req, res) => {
-  const filter = req.query.search;
+  let filter = req.query.search;
   if (!filter) return res.status(400).json({ message: 'Search Query Missing' });
   // Find with an empty body returns none -({})
   // Find without a body returns all -()
+  filter = '^'.concat(filter);
   const query = filter ? {
     $or: [
-      { name: { $regex: filter, $options: '-i' } },
-      { email: { $regex: filter, $options: '-i' } },
+      { name: { $regex: filter, $options: '-m' } },
+      { email: { $regex: filter, $options: '-m' } },
     ],
   } : {};
   const users = await User.find(query).find({ _id: { $ne: req.user._id } });
