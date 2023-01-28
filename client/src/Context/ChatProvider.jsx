@@ -28,9 +28,13 @@ export default function ChatProvider({ children }) {
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('user-info'));
-    if (userInfo) setUser(userInfo.data);
-    else navigate('/');
-  }, [loggedIn]);
+    console.log(userInfo);
+    if (userInfo) setUser(userInfo);
+    else {
+      console.log('Redirecting to Homepage');
+      navigate('/');
+    }
+  }, [navigate, loggedIn]);
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>;
 }
 

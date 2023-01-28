@@ -33,7 +33,6 @@ function ProfileModal({ user, isOpen, onClose }) {
 
 ProfileModal.propTypes = {
   user: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     photo: PropTypes.string.isRequired,

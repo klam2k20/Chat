@@ -21,8 +21,8 @@ function Header() {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logout = () => {
-    setLoggedIn(false);
     localStorage.clear();
+    setLoggedIn(false);
   };
 
   return (

@@ -7,6 +7,7 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../../Context/ChatProvider';
+import { loginUser } from '../../Utilities/apiRequests';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -33,10 +34,9 @@ function Login() {
       });
       setLoading(false);
     } else {
-      const headers = { 'context-type': 'application/json' };
       try {
-        const response = await axios.post('http://localhost:8080/api/user/login', { email, password }, headers);
-        localStorage.setItem('user-info', JSON.stringify(response));
+        const response = await loginUser(email, password);
+        localStorage.setItem('user-info', JSON.stringify(response.data));
         setLoading(false);
         setLoggedIn(true);
         navigate('/chats');

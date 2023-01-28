@@ -3,9 +3,9 @@ import {
   Box, Text, Avatar, Button, useToast,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import { getChatname } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
+import { getChats } from '../Utilities/apiRequests';
 
 function ChatsList() {
   const { user, chats, setChats } = useChat();
@@ -14,10 +14,7 @@ function ChatsList() {
   useEffect(() => {
     const fetchChats = async () => {
       try {
-        const header = {
-          headers: { Authorization: `Bearer ${user.token}` },
-        };
-        const res = await axios.get('http://localhost:8080/api/chat', header);
+        const res = await getChats(user.token);
         setChats(res.data);
       } catch (err) {
         toast({
@@ -31,7 +28,8 @@ function ChatsList() {
     };
 
     fetchChats();
-  }, [setChats, toast, user.token]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Box
@@ -39,6 +37,7 @@ function ChatsList() {
       flexDirection="column"
       justifyContent="center"
       gap="0.5rem"
+      width="100%"
     >
       {chats.map((chat) => (
         <Chat key={chat._id} chat={chat} />
@@ -48,7 +47,11 @@ function ChatsList() {
 }
 
 function Chat({ chat }) {
-  const { user } = useChat();
+  const { user, selectedChat, setSelectedChat } = useChat();
+
+  const selectChat = () => {
+    setSelectedChat(chat);
+  };
 
   return (
     <Button
@@ -58,12 +61,13 @@ function Chat({ chat }) {
       alignItems="center"
       py="1.5rem"
       px="1rem"
-      bg="#f2f2f2"
+      onClick={selectChat}
+      colorScheme="gray"
+      _hover={{ background: '#e0e0e0' }}
+      bg={selectedChat._id === chat._id ? '#e0e0e0' : '#f2f2f2'}
+      width="full"
     >
-      <Avatar
-        size={{ base: 'xs', md: 'sm' }}
-        name={getChatname(user, chat)}
-      />
+      <Avatar size={{ base: 'xs', md: 'sm' }} name={getChatname(user, chat)} />
       <Box display="flex" flexDirection="column" alignItems="start">
         <Text fontSize="lg">{getChatname(user, chat)}</Text>
         <Text fontSize="lg" fontWeight="lighter">

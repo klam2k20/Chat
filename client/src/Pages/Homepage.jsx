@@ -20,7 +20,7 @@ function Homepage() {
   useEffect(() => {
     const userInfo = localStorage.getItem('user-info');
     if (userInfo) {
-      setUser(userInfo.data);
+      setUser(userInfo);
       navigate('/chats');
       setLoggedIn(true);
     }

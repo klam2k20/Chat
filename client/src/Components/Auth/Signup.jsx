@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   Button,
   FormControl,
@@ -12,6 +11,7 @@ import {
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../../Context/ChatProvider';
+import { createUser } from '../../Utilities/apiRequests';
 
 function Signup() {
   const [name, setName] = useState('');
@@ -77,13 +77,8 @@ function Signup() {
       });
       setLoading(false);
     } else {
-      const headers = { 'content-type': 'application/json' };
       try {
-        const response = await axios.post(
-          'http://localhost:8080/api/user/',
-          { name, email, password },
-          headers,
-        );
+        const response = await createUser(name, email, password);
         toast({
           title: 'Registration Successful!',
           status: 'success',
@@ -91,7 +86,7 @@ function Signup() {
           isClosable: true,
           position: 'bottom',
         });
-        localStorage.setItem('user-info', JSON.stringify(response));
+        localStorage.setItem('user-info', JSON.stringify(response.data));
         setLoading(false);
         setLoggedIn(true);
         navigate('/chats');
