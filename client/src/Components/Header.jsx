@@ -15,7 +15,12 @@ import { useChat } from '../Context/ChatProvider';
 import { getAvatarSrc } from '../Utilities/utilities';
 
 function Header() {
-  const { user } = useChat();
+  const { user, setLoggedIn } = useChat();
+
+  const logout = () => {
+    setLoggedIn(false);
+    localStorage.clear();
+  };
 
   return (
     <Box
@@ -46,7 +51,7 @@ function Header() {
           <MenuList>
             <MenuItem>Profile</MenuItem>
             <MenuDivider />
-            <MenuItem>Logout</MenuItem>
+            <MenuItem onClick={logout}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Box>

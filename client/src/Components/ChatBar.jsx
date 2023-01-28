@@ -2,9 +2,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import {
-  Box, InputGroup, InputRightAddon, Input, Button, useToast, Avatar,
+  Box, InputGroup, InputRightAddon, Input, Button, useToast, Text,
 } from '@chakra-ui/react';
-import { SearchIcon } from '@chakra-ui/icons';
+import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
 import ListLoading from './ListLoading';
 import UsersList from './UsersList';
@@ -46,11 +46,18 @@ function ChatBar() {
 
   return (
     <Box flex={1} bg="white" borderRadius="md" p="0.5rem">
+      <Box display="flex" justifyContent="space-between" alignItems="center" py="0.5rem">
+        <Text fontSize="xl" fontWeight="bold">Messages</Text>
+        <Button bg="white">
+          <EditIcon fontSize="xl" />
+        </Button>
+
+      </Box>
       <Box>
         <InputGroup>
           <Input type="text" placeholder="Search" outline="none" value={search} onChange={(e) => handleSearch(e)} />
-          <InputRightAddon as={Button}>
-            <SearchIcon />
+          <InputRightAddon as={Button} bg="white">
+            <SearchIcon fontSize="sm" />
           </InputRightAddon>
         </InputGroup>
       </Box>
