@@ -12,9 +12,11 @@ import {
 } from '@chakra-ui/react';
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
+import { getAvatarSrc } from '../Utilities/utilities';
 
 function Header() {
   const { user } = useChat();
+
   return (
     <Box
       display="flex"
@@ -38,7 +40,7 @@ function Header() {
               size={{ base: 'xs', md: 'sm' }}
               cursor="pointer"
               name={user.name}
-              src={user.photo}
+              src={getAvatarSrc(user.photo)}
             />
           </MenuButton>
           <MenuList>
