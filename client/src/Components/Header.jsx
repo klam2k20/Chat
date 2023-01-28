@@ -9,13 +9,16 @@ import {
   MenuItem,
   Avatar,
   MenuDivider,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
 import { getAvatarSrc } from '../Utilities/utilities';
+import ProfileModal from './ProfileModal';
 
 function Header() {
   const { user, setLoggedIn } = useChat();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const logout = () => {
     setLoggedIn(false);
@@ -49,12 +52,13 @@ function Header() {
             />
           </MenuButton>
           <MenuList>
-            <MenuItem>Profile</MenuItem>
+            <MenuItem onClick={onOpen}>Profile</MenuItem>
             <MenuDivider />
             <MenuItem onClick={logout}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Box>
+      <ProfileModal user={user} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }
