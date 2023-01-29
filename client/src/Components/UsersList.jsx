@@ -1,13 +1,10 @@
 /* eslint-disable prefer-destructuring */
 import React from 'react';
-import {
-  Box, Text, Avatar, Button,
-} from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import { getAvatarSrc } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
 import { createOrFetchChat } from '../Utilities/apiRequests';
-import ListWrapper from './ListWrapper';
+import ListWrapper, { ListItem } from './ListWrapper';
 
 function UsersList({ users, clearSearch }) {
   return (
@@ -35,27 +32,13 @@ function User({ user, clearSearch }) {
   };
 
   return (
-    <Button
-      display="flex"
-      gap="0.5rem"
-      justifyContent="justify-start"
-      alignItems="center"
-      py="1.5rem"
-      px="1rem"
-      bg="#f2f2f2"
-      width="full"
-      onClick={createChat}
-    >
-      <Avatar
-        size={{ base: 'xs', md: 'sm' }}
-        name={user.name}
-        src={getAvatarSrc(user.photo)}
-      />
-      <Box display="flex" flexDirection="column" alignItems="start">
-        <Text fontSize="lg">{user.name}</Text>
-        <Text fontSize="lg" fontWeight="lighter">{user.email}</Text>
-      </Box>
-    </Button>
+    <ListItem
+      handleClick={createChat}
+      text={user.name}
+      subText={user.email}
+      photo={getAvatarSrc(user.photo)}
+      isSelected={false}
+    />
   );
 }
 
