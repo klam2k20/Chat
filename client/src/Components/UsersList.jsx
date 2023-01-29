@@ -1,3 +1,4 @@
+/* eslint-disable prefer-destructuring */
 import React from 'react';
 import {
   Box, Text, Avatar, Button,
@@ -25,14 +26,17 @@ function UsersList({ users, clearSearch }) {
 
 // eslint-disable-next-line no-unused-vars
 function User({ user, clearSearch }) {
-  const { // eslint-disable-next-line no-unused-vars
+  const {
     user: loggedInUser, setSelectedChat, chats, setChats,
   } = useChat();
+
   const createChat = async () => {
-    let res = await createOrFetchChat(loggedInUser.token, user._id);
-    res = res.data;
-    setSelectedChat(res[0]);
-    if (!chats.includes(res)) setChats([...chats, ...res]);
+    const { data } = await createOrFetchChat(loggedInUser.token, user._id);
+    const chat = data[0];
+    setSelectedChat(chat);
+    if (!chats.some((c) => c._id === chat._id)) {
+      setChats([...chats, chat]);
+    }
     clearSearch();
   };
 
