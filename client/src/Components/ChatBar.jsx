@@ -26,7 +26,7 @@ function ChatBar() {
     if (query) {
       try {
         const res = await getUsers(user.token, query);
-        setResult(res.data);
+        setResult(res.data.slice(0, 8));
       } catch (err) {
         toast({
           title: 'Invalid Search',
