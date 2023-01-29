@@ -8,7 +8,7 @@ const createChat = async (req, res) => {
   if (userId === req.user._id.toString()) return res.status(400).json({ message: conflictMsg });
   if (!userId) return res.status(400).json({ message: missingFieldMsg });
   const isChat = await Chat.find({
-    isGroupChat: false,
+    groupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
   })
     .populate('users', '-password')
