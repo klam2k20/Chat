@@ -13,7 +13,7 @@ const userSchema = new Schema(
       default: 'https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png',
     },
   },
-  { timestamp: true },
+  { timestamps: true },
 );
 
 /**
@@ -57,7 +57,7 @@ const messageSchema = new Schema(
     chat: { type: Schema.Types.ObjectId, ref: 'Chat' },
   },
   {
-    timestamp: true,
+    timestamps: true,
   },
 );
 
@@ -80,7 +80,7 @@ const chatSchema = new Schema(
       ref: 'User',
     },
   },
-  { timestamp: true },
+  { timestamps: true },
 );
 
 const User = mongoose.model('User', userSchema);

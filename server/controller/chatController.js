@@ -18,13 +18,13 @@ const createChat = async (req, res) => {
   // path: 'latestMessage.sender',
   // select: 'name pic email',
   // });
-  if (isChat.length) return res.status(200).json(isChat);
+  if (isChat.length) return res.status(200).json(isChat[0]);
 
   const chat = Chat({ chatName: 'sender', users: [req.user._id, userId] });
   await chat.save(async (err) => {
     if (!err) {
       const newChat = await Chat.find({ _id: chat._id }).populate('users', '-password');
-      return res.status(201).json(newChat);
+      return res.status(201).json(newChat[0]);
     }
     return res
       .status(400)
