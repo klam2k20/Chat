@@ -13,9 +13,15 @@ function UsersList({ users, clearSearch }) {
     <Box
       display="flex"
       flexDirection="column"
-      justifyContent="center"
       gap="0.5rem"
       width="100%"
+      py="0.5rem"
+      overflowY="scroll"
+      sx={{
+        '::-webkit-scrollbar': {
+          display: 'none',
+        },
+      }}
     >
       {users.map((user) => (
         <User key={user._id} user={user} clearSearch={clearSearch} />

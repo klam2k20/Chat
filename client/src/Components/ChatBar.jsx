@@ -47,6 +47,9 @@ function ChatBar() {
       bg="white"
       borderRadius="md"
       p="0.5rem"
+      display="flex"
+      flexDirection="column"
+      h="100%"
     >
       <Box
         display="flex"
@@ -75,13 +78,13 @@ function ChatBar() {
           </InputRightAddon>
         </InputGroup>
       </Box>
-      <Box py="0.5rem">
-        {search ? (
-          result.length > 0 && <UsersList users={result} clearSearch={() => setSearch('')} />
-        ) : (
-          <ChatsList />
-        )}
-      </Box>
+
+      {search ? (
+        result.length > 0 && <UsersList users={result} clearSearch={() => setSearch('')} />
+      ) : (
+        <ChatsList />
+      )}
+
     </Box>
   );
 }

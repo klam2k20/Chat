@@ -33,10 +33,10 @@ function Header() {
       display="flex"
       justifyContent="space-between"
       alignItems="center"
-      flex={1}
       bg="white"
       borderRadius="md"
       px="1rem"
+      h="10%"
     >
       <Text fontSize={['xl', '2xl', '3xl', '4xl']}>Connect-Me</Text>
       <Box display="flex" gap="0.5rem" alignItems="center">
