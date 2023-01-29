@@ -7,18 +7,21 @@ import {
   Button,
   useToast,
   Text,
+  useDisclosure,
 } from '@chakra-ui/react';
 import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
 import UsersList from './UsersList';
 import ChatsList from './ChatsList';
 import { getUsers } from '../Utilities/apiRequests';
+import GroupModal from './Modal/GroupModal';
 
 function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
   const toast = useToast();
   const { user } = useChat();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSearch = async (e) => {
     const query = e.target.value;
@@ -60,9 +63,10 @@ function ChatBar() {
         <Text fontSize="xl" fontWeight="bold">
           Messages
         </Text>
-        <Button bg="white">
+        <Button bg="white" onClick={onOpen}>
           <EditIcon fontSize="xl" />
         </Button>
+        <GroupModal isOpen={isOpen} onClose={onClose} />
       </Box>
       <Box>
         <InputGroup>
@@ -80,11 +84,10 @@ function ChatBar() {
       </Box>
 
       {search ? (
-        result.length > 0 && <UsersList users={result} clearSearch={() => setSearch('')} />
+        result.length > 0 && (<UsersList users={result} clearSearch={() => setSearch('')} />)
       ) : (
         <ChatsList />
       )}
-
     </Box>
   );
 }
