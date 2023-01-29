@@ -7,26 +7,15 @@ import PropTypes from 'prop-types';
 import { getAvatarSrc } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
 import { createOrFetchChat } from '../Utilities/apiRequests';
+import ListWrapper from './ListWrapper';
 
 function UsersList({ users, clearSearch }) {
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap="0.5rem"
-      width="100%"
-      py="0.5rem"
-      overflowY="scroll"
-      sx={{
-        '::-webkit-scrollbar': {
-          display: 'none',
-        },
-      }}
-    >
+    <ListWrapper>
       {users.map((user) => (
         <User key={user._id} user={user} clearSearch={clearSearch} />
       ))}
-    </Box>
+    </ListWrapper>
   );
 }
 

@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import { getAvatarSrc, getChatname } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
 import { getChats } from '../Utilities/apiRequests';
+import ListWrapper from './ListWrapper';
 
 function ChatsList() {
   const { user, chats, setChats } = useChat();
@@ -32,23 +33,11 @@ function ChatsList() {
   }, []);
 
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      gap="0.5rem"
-      width="100%"
-      py="0.5rem"
-      overflowY="scroll"
-      sx={{
-        '::-webkit-scrollbar': {
-          display: 'none',
-        },
-      }}
-    >
+    <ListWrapper>
       {chats.map((chat) => (
         <Chat key={chat._id} chat={chat} />
       ))}
-    </Box>
+    </ListWrapper>
   );
 }
 
