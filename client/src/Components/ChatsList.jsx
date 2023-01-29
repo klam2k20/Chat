@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import {
-  Box, Text, Avatar, Button, useToast, ButtonGroup, IconButton,
+  Box, Text, Avatar, Button, useToast, ButtonGroup,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import { DeleteIcon } from '@chakra-ui/icons';
 import { getChatname } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
-import { getChats, deleteUserChat } from '../Utilities/apiRequests';
+import { getChats } from '../Utilities/apiRequests';
 
 function ChatsList() {
   const { user, chats, setChats } = useChat();
@@ -48,40 +47,10 @@ function ChatsList() {
 }
 
 function Chat({ chat }) {
-  const {
-    user, selectedChat, setSelectedChat, chats, setChats,
-  } = useChat();
-  const toast = useToast();
+  const { user, selectedChat, setSelectedChat } = useChat();
 
   const selectChat = () => {
     setSelectedChat(chat);
-  };
-
-  const deleteChat = async () => {
-    try {
-      if (chat.groupChat && chat.groupAdmin._id !== user._id) {
-        toast({
-          title: 'You Aren\'t Group Admin',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-        return;
-      }
-      await deleteUserChat(user.token, chat._id);
-      if (selectedChat && selectChat._id === chat._id) setSelectedChat(null);
-      const updatedChats = chats.filter((c) => c._id !== chat._id);
-      setChats(updatedChats);
-    } catch (err) {
-      toast({
-        title: 'Error Deleting Chat',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
-    }
   };
 
   return (
@@ -111,7 +80,6 @@ function Chat({ chat }) {
           </Text>
         </Box>
       </Button>
-      <IconButton _hover={{ color: 'white' }} bg="red.500" icon={<DeleteIcon />} onClick={deleteChat} />
     </ButtonGroup>
   );
 }

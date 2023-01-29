@@ -1,9 +1,7 @@
-/* eslint-disable no-unused-vars */
 import {
   FormControl, FormLabel, Input, VStack,
-  InputGroup, InputRightAddon, Button, Box, useToast,
+  InputGroup, InputRightAddon, Button, useToast,
 } from '@chakra-ui/react';
-import axios from 'axios';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../../Context/ChatProvider';
