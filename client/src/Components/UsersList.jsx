@@ -27,10 +27,9 @@ function User({ user, clearSearch }) {
 
   const createChat = async () => {
     const { data } = await createOrFetchChat(loggedInUser.token, user._id);
-    const chat = data[0];
-    setSelectedChat(chat);
-    if (!chats.some((c) => c._id === chat._id)) {
-      setChats([...chats, chat]);
+    setSelectedChat(data);
+    if (!chats.some((c) => c._id === data._id)) {
+      setChats([data, ...chats]);
     }
     clearSearch();
   };
