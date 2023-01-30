@@ -61,8 +61,8 @@ const filterUsers = async (req, res) => {
   filter = '^'.concat(filter);
   const query = filter ? {
     $or: [
-      { name: { $regex: filter, $options: '-m' } },
-      { email: { $regex: filter, $options: '-m' } },
+      { name: { $regex: filter, $options: '-im' } },
+      { email: { $regex: filter, $options: '-im' } },
     ],
   } : {};
   const users = await User.find(query).find({ _id: { $ne: req.user._id } });
