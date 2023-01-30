@@ -9,7 +9,6 @@ import {
   MenuItem,
   Avatar,
   MenuDivider,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
@@ -19,7 +18,6 @@ import ProfileModal from './Modal/ProfileModal';
 
 function Header() {
   const { user, setLoggedIn } = useChat();
-  const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
 
   const logout = () => {
@@ -55,13 +53,14 @@ function Header() {
             />
           </MenuButton>
           <MenuList>
-            <MenuItem onClick={onOpen}>Profile</MenuItem>
+            <ProfileModal user={user}>
+              <MenuItem>Profile</MenuItem>
+            </ProfileModal>
             <MenuDivider />
             <MenuItem onClick={logout}>Logout</MenuItem>
           </MenuList>
         </Menu>
       </Box>
-      <ProfileModal user={user} isOpen={isOpen} onClose={onClose} />
     </Box>
   );
 }

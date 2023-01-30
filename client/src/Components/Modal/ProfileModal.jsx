@@ -1,44 +1,59 @@
 import {
-  Button, Image, Modal, ModalBody, ModalCloseButton, ModalContent,
-  ModalFooter, ModalHeader, ModalOverlay, Text,
+  Avatar,
+  Box, Image, Modal, ModalBody, ModalCloseButton, ModalContent,
+  ModalOverlay, Text, useDisclosure,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import { getAvatarSrc } from '../../Utilities/utilities';
 
-function ProfileModal({ user, isOpen, onClose }) {
+function ProfileModal({ children, user }) {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader display="flex" justifyContent="center" fontWeight="bold" fontSize="xl">{user.name}</ModalHeader>
-        <ModalCloseButton />
-        <ModalBody display="flex" flexDirection="column" alignItems="center" gap="1rem">
-          <Image
-            alt={user.name}
-            src={user.photo}
-            boxSize={{ base: '10rem', md: '20rem' }}
-            borderRadius="full"
-          />
-          <Text>{user.email}</Text>
-        </ModalBody>
-
-        <ModalFooter>
-          <Button onClick={onClose}>
-            Close
-          </Button>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+    <>
+      <Box onClick={onOpen}>{children}</Box>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalCloseButton />
+          <ModalBody
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            gap="1rem"
+            p="2rem"
+          >
+            {
+            getAvatarSrc(user.photo) ? (
+              <Image
+                alt={user.name}
+                src={user.photo}
+                boxSize={{ base: '4rem', md: '8rem' }}
+                borderRadius="full"
+              />
+            ) : (
+              <Avatar
+                name={user.name}
+                src={getAvatarSrc(user.photo)}
+                size={{ base: 'lg', md: '2xl' }}
+              />
+            )
+          }
+            <Text fontSize="xl" fontWeight="bold">{user.name}</Text>
+          </ModalBody>
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 
 ProfileModal.propTypes = {
+  children: PropTypes.node.isRequired,
   user: PropTypes.shape({
     name: PropTypes.string.isRequired,
     email: PropTypes.string.isRequired,
     photo: PropTypes.string.isRequired,
   }).isRequired,
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
 };
 
 export default ProfileModal;

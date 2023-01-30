@@ -6,6 +6,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  useDisclosure,
   useToast,
 } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
@@ -15,11 +16,12 @@ import SearchInput from '../SearchInput';
 import { useChat } from '../../Context/ChatProvider';
 import { createOrFetchChat, createOrFetchGroupChat } from '../../Utilities/apiRequests';
 
-function ChatModal({ isOpen, onClose, fetch, setFetch }) {
+function ChatModal({ children, fetch, setFetch }) {
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [active, setActive] = useState(false);
   const { user, setSelectedChat } = useChat();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
   useEffect(() => {
@@ -52,39 +54,48 @@ function ChatModal({ isOpen, onClose, fetch, setFetch }) {
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader
-          display="flex"
-          justifyContent="space-between"
-          alignItems="center"
-          fontWeight="bold"
-          fontSize="xl"
-        >
-          <ArrowBackIcon cursor="pointer" onClick={onClose} />
-          New Message
-          <Button bg="white" cursor="pointer" isDisabled={!active} onClick={createChat}>
-            Chat
-          </Button>
-        </ModalHeader>
-        <ModalBody>
-          <SearchInput
-            search={search}
-            setSearch={setSearch}
-            selectedUsers={selectedUsers}
-            setSelectedUsers={setSelectedUsers}
-          />
-        </ModalBody>
-        <ModalFooter />
-      </ModalContent>
-    </Modal>
+    <>
+      <Button bg="white" onClick={onOpen}>
+        {children}
+      </Button>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            fontWeight="bold"
+            fontSize="xl"
+          >
+            <ArrowBackIcon cursor="pointer" onClick={onClose} />
+            New Message
+            <Button
+              bg="white"
+              cursor="pointer"
+              isDisabled={!active}
+              onClick={createChat}
+            >
+              Chat
+            </Button>
+          </ModalHeader>
+          <ModalBody>
+            <SearchInput
+              search={search}
+              setSearch={setSearch}
+              selectedUsers={selectedUsers}
+              setSelectedUsers={setSelectedUsers}
+            />
+          </ModalBody>
+          <ModalFooter />
+        </ModalContent>
+      </Modal>
+    </>
   );
 }
 
 ChatModal.propTypes = {
-  isOpen: PropTypes.bool.isRequired,
-  onClose: PropTypes.func.isRequired,
+  children: PropTypes.node.isRequired,
   fetch: PropTypes.bool.isRequired,
   setFetch: PropTypes.func.isRequired,
 };

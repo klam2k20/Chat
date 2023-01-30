@@ -6,7 +6,6 @@ import {
   Input,
   Button,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react';
 import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
@@ -18,7 +17,6 @@ function ChatBar() {
   const [result, setResult] = useState([]);
   const [fetch, setFetch] = useState(false);
   const { chats } = useChat();
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSearch = async (e) => {
     const query = e.target.value;
@@ -51,10 +49,12 @@ function ChatBar() {
         <Text fontSize="xl" fontWeight="bold">
           Messages
         </Text>
-        <Button bg="white" onClick={onOpen}>
+        <ChatModal
+          fetch={fetch}
+          setFetch={setFetch}
+        >
           <EditIcon fontSize="xl" />
-        </Button>
-        <ChatModal isOpen={isOpen} onClose={onClose} fetch={fetch} setFetch={setFetch} />
+        </ChatModal>
       </Box>
       <Box>
         <InputGroup>
