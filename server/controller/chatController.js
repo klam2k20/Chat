@@ -1,13 +1,14 @@
 const { mongoose } = require('mongoose');
-const { Chat } = require('../model/models');
+const { Chat, User } = require('../model/models');
 
 const createChat = async (req, res) => {
   const missingFieldMsg = 'Creating a Chat Requires a User ID';
   const conflictMsg = 'Creating a Chat Requires a User ID Besides Yours';
   const { userId } = req.body;
+  if (!mongoose.Types.ObjectId.isValid(userId)) { return res.status(400).json({ message: 'Invalid User ID' }); }
   if (userId === req.user._id.toString()) return res.status(400).json({ message: conflictMsg });
   if (!userId) return res.status(400).json({ message: missingFieldMsg });
-  const isChat = await Chat.find({
+  const isChat = await Chat.findOne({
     groupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
   })
@@ -18,9 +19,14 @@ const createChat = async (req, res) => {
   // path: 'latestMessage.sender',
   // select: 'name pic email',
   // });
-  if (isChat.length) return res.status(200).json(isChat[0]);
+  if (isChat) return res.status(200).json(isChat);
 
-  const chat = Chat({ chatName: 'sender', users: [req.user._id, userId] });
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    return res.status(404).json({ message: 'User Not Found' });
+  }
+
+  const chat = Chat({ chatName: user.name, users: [req.user._id, userId] });
   await chat.save(async (err) => {
     if (!err) {
       const newChat = await Chat.find({ _id: chat._id }).populate('users', '-password');
@@ -81,7 +87,7 @@ const createGroupChat = async (req, res) => {
     .populate('users', '-password')
     .populate('groupAdmin', '-password')
     .populate('latestMessage', '-chat');
-  if (isGroupChat.length) return res.status(200).json(isGroupChat);
+  if (isGroupChat.length) return res.status(200).json(isGroupChat[0]);
 
   const groupChat = Chat({
     chatName,
@@ -94,7 +100,7 @@ const createGroupChat = async (req, res) => {
       const chat = await Chat.find({ _id: groupChat._id })
         .populate('users', '-password')
         .populate('groupAdmin', '-password');
-      return res.status(201).json(chat);
+      return res.status(201).json(chat[0]);
     }
     return res.status(400).json({ message: `Error While Creating Group Chat ${err.message}` });
   });
