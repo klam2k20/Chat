@@ -70,19 +70,12 @@ const createGroupChat = async (req, res) => {
   const missingRequiredMsg = 'Creating a Group Chat Requires a Chat Name and a List of User IDs';
   const userIdsLengthMsg = 'Creating a Group Chat Requires at Least 2 Additional User IDs Besides Yours';
   const { chatName, userIds } = req.body;
-  console.log('1');
   if (!chatName || !userIds) return res.status(400).json({ message: missingRequiredMsg });
-  console.log('2');
   let allUserIds = JSON.parse(userIds);
-  console.log('3');
   allUserIds = allUserIds.filter((id) => id !== req.user._id.toString());
-  console.log('4');
   const allObjectIds = allUserIds.map((id) => mongoose.Types.ObjectId(id));
-  console.log('5');
   allObjectIds.push(req.user._id);
-  console.log('6');
   if (allObjectIds.length < 3) return res.status(400).json({ message: userIdsLengthMsg });
-  console.log('7');
   const isGroupChat = await Chat.find({
     isGroupChat: true,
     $and: [
@@ -94,16 +87,13 @@ const createGroupChat = async (req, res) => {
     .populate('users', '-password')
     .populate('groupAdmin', '-password')
     .populate('latestMessage', '-chat');
-  console.log('8');
   if (isGroupChat.length) return res.status(200).json(isGroupChat[0]);
-  console.log('9');
   const groupChat = Chat({
     chatName,
     groupChat: true,
     users: [...allUserIds, req.user._id.toString()],
     groupAdmin: req.user._id.toString(),
   });
-  console.log('10');
   groupChat.save(async (err) => {
     if (!err) {
       const chat = await Chat.find({ _id: groupChat._id })
