@@ -11,19 +11,25 @@ import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
 import ChatsList from './ChatsList';
 import ChatModal from './Modal/ChatModal';
+import { getChatName } from '../Utilities/utilities';
 
 function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
   const [fetch, setFetch] = useState(false);
-  const { chats } = useChat();
+  const { user, chats } = useChat();
 
   const handleSearch = async (e) => {
     const query = e.target.value;
     setSearch(query);
     if (query) {
       const filterChats = chats.filter(
-        (c) => c.chatName.toLowerCase().startsWith(query.toLowerCase()),
+        (c) => {
+          if (c.chatName !== 'sender' && c.chatName !== 'group') return c.chatName.toLowerCase().startsWith(query.toLowerCase());
+          return getChatName(user._id, c)
+            .toLowerCase()
+            .startsWith(query.toLowerCase());
+        },
       );
       setResult(filterChats);
     }
