@@ -81,7 +81,8 @@ const createGroupChat = async (req, res) => {
     isGroupChat: true,
     $and: [
       { users: { $size: allObjectIds.length } },
-      { users: { $all: allObjectIds } },
+      // { users: { $all: allObjectIds } },
+      { $setEquals: ['users', allUserIds] },
     ],
   })
     .populate('users', '-password')
