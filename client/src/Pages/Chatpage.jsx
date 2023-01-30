@@ -12,7 +12,7 @@ function Chatpage() {
         <Header />
         <Box display="flex" h="90%" gap="1rem">
           <ChatBar />
-          <Box flex={3} bg="white" borderRadius="md" p="0.5rem">
+          <Box flex={3} bg="white" borderRadius="md" p="0.5rem" w="70%">
             {' '}
             Window
           </Box>

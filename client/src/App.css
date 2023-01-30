@@ -1,6 +1,10 @@
 .app {
-	display: flex;
-	justify-content: center;
-	min-height: 100vh;
-	background-color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f2f2f2;
+}
+
+.searchInput:focus {
+  outline: none;
 }

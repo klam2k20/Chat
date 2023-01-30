@@ -14,7 +14,7 @@ import { useChat } from '../Context/ChatProvider';
 import UsersList from './UsersList';
 import ChatsList from './ChatsList';
 import { getUsers } from '../Utilities/apiRequests';
-import GroupModal from './Modal/GroupModal';
+import GroupModal from './Modal/ChatModal';
 
 function ChatBar() {
   const [search, setSearch] = useState('');
@@ -53,6 +53,7 @@ function ChatBar() {
       display="flex"
       flexDirection="column"
       h="100%"
+      w="30%"
     >
       <Box
         display="flex"

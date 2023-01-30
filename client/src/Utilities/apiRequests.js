@@ -42,6 +42,14 @@ const createOrFetchChat = (token, userId) => {
   return axios.post(baseUrl.concat('/api/chat'), { userId }, header);
 };
 
+const createOrFetchGroupChat = (token, chatName, userIds) => {
+  const header = {
+    'context-type': 'application/json',
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.post(baseUrl.concat('/api/chat/group'), { chatName, userIds }, header);
+};
+
 const deleteUserChat = (token, chatId) => {
   const header = {
     headers: { Authorization: `Bearer ${token}` },
@@ -58,5 +66,6 @@ export {
   getUsers,
   getChats,
   createOrFetchChat,
+  createOrFetchGroupChat,
   deleteUserChat,
 };

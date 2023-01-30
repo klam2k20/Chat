@@ -41,8 +41,10 @@ function ListItem({
       width="full"
     >
       <Avatar size={{ base: 'xs', md: 'sm' }} name={text} src={photo} />
-      <Box display="flex" flexDirection="column" alignItems="start">
-        <Text fontSize="lg">{text}</Text>
+      <Box display="flex" flexDirection="column" alignItems="start" maxW="90%">
+        <Text fontSize="lg" maxW="100%" isTruncated>
+          {text}
+        </Text>
         <Text fontSize="lg" fontWeight="lighter">
           {subText}
         </Text>
