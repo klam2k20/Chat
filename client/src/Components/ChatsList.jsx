@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import getAvatarSrc from '../Utilities/utilities';
+import { getAvatarSrc, getChatName } from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
 import { getChats } from '../Utilities/apiRequests';
 import ListWrapper, { ListItem } from './ListWrapper';
 
-function ChatsList({ chats }) {
+function ChatsList({ chats, fetch }) {
   const { user, setChats } = useChat();
   const toast = useToast();
 
@@ -28,7 +28,7 @@ function ChatsList({ chats }) {
 
     fetchChats();
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [fetch]);
 
   return (
     <ListWrapper>
@@ -49,7 +49,7 @@ function Chat({ chat }) {
   return (
     <ListItem
       handleClick={selectChat}
-      text={chat.chatName}
+      text={getChatName(user._id, chat)}
       subText="Latest Message"
       photo={getAvatarSrc(user.photo)}
       isSelected={(selectedChat && selectedChat._id === chat._id)}
@@ -72,6 +72,7 @@ ChatsList.propTypes = {
       }),
     }),
   ).isRequired,
+  fetch: PropTypes.bool.isRequired,
 };
 
 Chat.propTypes = {

@@ -14,7 +14,7 @@ import {
 import { BellIcon, ChevronDownIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../Context/ChatProvider';
-import getAvatarSrc from '../Utilities/utilities';
+import { getAvatarSrc } from '../Utilities/utilities';
 import ProfileModal from './Modal/ProfileModal';
 
 function Header() {

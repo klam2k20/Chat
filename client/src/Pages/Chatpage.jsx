@@ -1,5 +1,6 @@
 import { Box } from '@chakra-ui/react';
 import ChatBar from '../Components/ChatBar';
+import ChatWindow from '../Components/ChatWindow';
 import Header from '../Components/Header';
 import { useChat } from '../Context/ChatProvider';
 
@@ -12,10 +13,7 @@ function Chatpage() {
         <Header />
         <Box display="flex" h="90%" gap="1rem">
           <ChatBar />
-          <Box flex={3} bg="white" borderRadius="md" p="0.5rem" w="70%">
-            {' '}
-            Window
-          </Box>
+          <ChatWindow />
         </Box>
       </>
       )}

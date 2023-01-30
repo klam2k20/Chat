@@ -4,4 +4,12 @@ const getAvatarSrc = (src) => (
     ? '' : src
 );
 
-export default getAvatarSrc;
+const getChatName = (userId, chat) => {
+  if (chat.groupChat && chat.chatName !== 'group') return chat.chatName;
+  return chat.users.reduce((acc, u) => {
+    if (u._id === userId) return acc;
+    return `${acc + u.name}, `;
+  }, '').slice(0, -2);
+};
+
+export { getAvatarSrc, getChatName };

@@ -15,7 +15,7 @@ import SearchInput from '../SearchInput';
 import { useChat } from '../../Context/ChatProvider';
 import { createOrFetchChat, createOrFetchGroupChat } from '../../Utilities/apiRequests';
 
-function ChatModal({ isOpen, onClose }) {
+function ChatModal({ isOpen, onClose, fetch, setFetch }) {
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [active, setActive] = useState(false);
@@ -27,18 +27,18 @@ function ChatModal({ isOpen, onClose }) {
   }, [selectedUsers]);
 
   const createChat = async () => {
-    const name = selectedUsers.reduce((acc, currentUser) => `${acc + currentUser.name}, `, '');
     try {
       const { data } =
         selectedUsers.length === 1
           ? await createOrFetchChat(user.token, selectedUsers[0]._id)
           : await createOrFetchGroupChat(
             user.token,
-            name,
+            'group',
             JSON.stringify(selectedUsers.map((u) => u._id)),
           );
       setSelectedChat(data);
       setSelectedUsers([]);
+      setFetch(!fetch);
       onClose();
     } catch (e) {
       toast({
@@ -85,6 +85,8 @@ function ChatModal({ isOpen, onClose }) {
 ChatModal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
+  fetch: PropTypes.bool.isRequired,
+  setFetch: PropTypes.func.isRequired,
 };
 
 export default ChatModal;

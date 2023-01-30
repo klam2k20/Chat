@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import getAvatarSrc from '../Utilities/utilities';
+import { getAvatarSrc } from '../Utilities/utilities';
 import ListWrapper, { ListItem } from './ListWrapper';
 
 function UsersList({ users, handleClick }) {

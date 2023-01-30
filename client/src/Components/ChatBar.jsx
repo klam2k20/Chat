@@ -16,6 +16,7 @@ import ChatModal from './Modal/ChatModal';
 function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
+  const [fetch, setFetch] = useState(false);
   const { chats } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -53,7 +54,7 @@ function ChatBar() {
         <Button bg="white" onClick={onOpen}>
           <EditIcon fontSize="xl" />
         </Button>
-        <ChatModal isOpen={isOpen} onClose={onClose} />
+        <ChatModal isOpen={isOpen} onClose={onClose} fetch={fetch} setFetch={setFetch} />
       </Box>
       <Box>
         <InputGroup>
@@ -71,9 +72,9 @@ function ChatBar() {
       </Box>
 
       {search ? (
-        result.length > 0 && <ChatsList chats={result} />
+        result.length > 0 && <ChatsList chats={result} fetch={fetch} />
       ) : (
-        <ChatsList chats={chats} />
+        <ChatsList chats={chats} fetch={fetch} />
       )}
     </Box>
   );
