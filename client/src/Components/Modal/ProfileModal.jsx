@@ -1,6 +1,6 @@
 import {
   Avatar,
-  Box, Image, Modal, ModalBody, ModalCloseButton, ModalContent,
+  Box, Modal, ModalBody, ModalCloseButton, ModalContent,
   ModalOverlay, Text, useDisclosure,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
@@ -23,22 +23,11 @@ function ProfileModal({ children, user }) {
             gap="1rem"
             p="2rem"
           >
-            {
-            getAvatarSrc(user.photo) ? (
-              <Image
-                alt={user.name}
-                src={user.photo}
-                boxSize={{ base: '4rem', md: '8rem' }}
-                borderRadius="full"
-              />
-            ) : (
-              <Avatar
-                name={user.name}
-                src={getAvatarSrc(user.photo)}
-                size={{ base: 'lg', md: '2xl' }}
-              />
-            )
-          }
+            <Avatar
+              name={user.name}
+              src={getAvatarSrc(user.photo)}
+              size={{ base: 'lg', md: '2xl' }}
+            />
             <Text fontSize="xl" fontWeight="bold">{user.name}</Text>
           </ModalBody>
         </ModalContent>
