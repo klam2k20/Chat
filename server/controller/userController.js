@@ -1,5 +1,5 @@
 const { User } = require('../model/models');
-const { generateJWT } = require('../utilities/auth');
+const { generateJWT } = require('../utilities/utilities');
 
 // POST /api/user/
 const registerUser = async (req, res) => {

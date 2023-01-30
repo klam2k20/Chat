@@ -1,13 +1,26 @@
 const { mongoose } = require('mongoose');
 const { Chat, User } = require('../model/models');
+const { validateId } = require('../utilities/utilities');
 
 const createChat = async (req, res) => {
-  const missingFieldMsg = 'Creating a Chat Requires a User ID';
-  const conflictMsg = 'Creating a Chat Requires a User ID Besides Yours';
   const { userId } = req.body;
-  if (!mongoose.Types.ObjectId.isValid(userId)) { return res.status(400).json({ message: 'Invalid User ID' }); }
-  if (userId === req.user._id.toString()) return res.status(400).json({ message: conflictMsg });
-  if (!userId) return res.status(400).json({ message: missingFieldMsg });
+  // Error Handling
+  if (!userId) {
+    return res
+      .status(400)
+      .json({ message: 'Creating a Chat Requires a User ID' });
+  } if (!validateId(userId)) {
+    return res.status(400).json({ message: `Invalid User ID ${userId}` });
+  } if (userId === req.user._id.toString()) {
+    return res
+      .status(400)
+      .json({ message: 'Creating a Chat Requires a User ID Besides Yours' });
+  }
+  const user = await User.findOne({ _id: userId });
+  if (!user) {
+    return res.status(404).json({ message: 'User Not Found' });
+  }
+
   const isChat = await Chat.findOne({
     groupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
@@ -21,12 +34,7 @@ const createChat = async (req, res) => {
   // });
   if (isChat) return res.status(200).json(isChat);
 
-  const user = await User.findOne({ _id: userId });
-  if (!user) {
-    return res.status(404).json({ message: 'User Not Found' });
-  }
-
-  const chat = Chat({ chatName: user.name, users: [req.user._id, userId] });
+  const chat = Chat({ chatName: 'sender', users: [req.user._id, userId] });
   await chat.save(async (err) => {
     if (!err) {
       const newChat = await Chat.find({ _id: chat._id }).populate('users', '-password');
@@ -52,30 +60,40 @@ const getUserChats = async (req, res) => {
   res.status(200).json(chats);
 };
 
-const deleteUserChat = async (req, res) => {
-  const errorMsg = 'Deleting a Chat Requires a Chat ID';
-  const chatId = req.query.id;
-  if (!chatId) return res.status(400).json({ message: errorMsg });
-  try {
-    await Chat.deleteOne({ _id: chatId });
-    return res.status(200).json({ message: 'Chat Deleted Successfully' });
-  } catch (err) {
+const createGroupChat = async (req, res) => {
+  const { userIds } = req.body;
+
+  // Error Handling
+  if (!userIds) {
     return res
       .status(400)
-      .json({ message: `Error While Deleting Chat: ${err.message}` });
+      .json({
+        message:
+        'Creating a Group Chat Requires a List of User IDs',
+      });
   }
-};
-
-const createGroupChat = async (req, res) => {
-  const missingRequiredMsg = 'Creating a Group Chat Requires a Chat Name and a List of User IDs';
-  const userIdsLengthMsg = 'Creating a Group Chat Requires at Least 2 Additional User IDs Besides Yours';
-  const { chatName, userIds } = req.body;
-  if (!chatName || !userIds) return res.status(400).json({ message: missingRequiredMsg });
   let allUserIds = JSON.parse(userIds);
-  allUserIds = allUserIds.filter((id) => id !== req.user._id.toString());
-  const allObjectIds = allUserIds.map((id) => mongoose.Types.ObjectId(id));
-  allObjectIds.push(req.user._id);
-  if (allObjectIds.length < 3) return res.status(400).json({ message: userIdsLengthMsg });
+  allUserIds.push(req.user._id.toString());
+  allUserIds = [...new Set(allUserIds)];
+  let allObjectIds;
+  try {
+    allObjectIds = allUserIds.map((id) => {
+      if (!validateId(id)) throw Error(`Invalid User ID ${id}`);
+      return mongoose.Types.ObjectId(id);
+    });
+  } catch (err) {
+    return res.status(400).json({ message: err.message });
+  }
+
+  if (allObjectIds.length < 3) {
+    return res
+      .status(400)
+      .json({
+        message:
+        'Creating a Group Chat Requires at Least 2 Additional User IDs Besides Yours',
+      });
+  }
+
   const isGroupChat = await Chat.find({
     isGroupChat: true,
     $and: [
@@ -89,9 +107,9 @@ const createGroupChat = async (req, res) => {
     .populate('latestMessage', '-chat');
   if (isGroupChat.length) return res.status(200).json(isGroupChat[0]);
   const groupChat = Chat({
-    chatName,
+    chatName: 'group',
     groupChat: true,
-    users: [...allUserIds, req.user._id.toString()],
+    users: allUserIds,
     groupAdmin: req.user._id.toString(),
   });
   groupChat.save(async (err) => {
@@ -106,14 +124,17 @@ const createGroupChat = async (req, res) => {
 };
 
 const renameChat = async (req, res) => {
-  const errorMsg = 'Renaming a Chat Requires a Chat ID and Chat Name';
   const { chatId, chatName } = req.body;
-  if (!chatId || !chatName) return res.status(400).json({ message: errorMsg });
-  const chat = await Chat.findByIdAndUpdate(
-    chatId,
-    { chatName },
-    { new: true },
-  )
+  // Error Handling
+  if (!chatId || !chatName) {
+    return res
+      .status(400)
+      .json({ message: 'Renaming a Chat Requires a Chat ID and Chat Name' });
+  } if (!validateId(chatId)) {
+    return res.status(400).json({ message: `Invalid Chat ID ${chatId}` });
+  }
+
+  const chat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
     .populate('users', '-password')
     .populate('groupAdmin', '-password');
   if (!chat) return res.status(404).json('Chat Not Found');
@@ -122,9 +143,20 @@ const renameChat = async (req, res) => {
 };
 
 const addToGroup = async (req, res) => {
-  const errorMsg = 'Adding a Member to a Chat Requires a Chat ID and User ID';
   const { chatId, userId } = req.body;
-  if (!chatId || !userId) return res.status(400).json({ message: errorMsg });
+  // Error Handling
+  if (!chatId || !userId) {
+    return res
+      .status(400)
+      .json({
+        message: 'Adding a Member to a Chat Requires a Chat ID and User ID',
+      });
+  } if (!validateId(chatId)) {
+    return res.status(400).json({ message: `Invalid Chat ID ${chatId}` });
+  } if (!validateId(userId)) {
+    return res.status(400).json({ message: `Invalid User ID ${userId}` });
+  }
+
   const chat = await Chat.findByIdAndUpdate(
     chatId,
     { $addToSet: { users: userId } },
@@ -137,9 +169,20 @@ const addToGroup = async (req, res) => {
 };
 
 const removeFromGroup = async (req, res) => {
-  const errorMsg = 'Removing a Member from a Chat Requires a Chat ID and User ID';
   const { chatId, userId } = req.body;
-  if (!chatId || !userId) return res.status(400).json({ message: errorMsg });
+  // Error Handling
+  if (!chatId || !userId) {
+    return res
+      .status(400)
+      .json({
+        message: 'Removing a Member from a Chat Requires a Chat ID and User ID',
+      });
+  } if (!validateId(chatId)) {
+    return res.status(400).json({ message: `Invalid Chat ID ${chatId}` });
+  } if (!validateId(userId)) {
+    return res.status(400).json({ message: `Invalid User ID ${userId}` });
+  }
+
   const chat = await Chat.findByIdAndUpdate(
     chatId,
     { $pull: { users: userId } },
@@ -149,6 +192,27 @@ const removeFromGroup = async (req, res) => {
     .populate('groupAdmin', '-password');
   if (!chat) return res.status(404).json('Chat Not Found');
   return res.json(chat);
+};
+
+const deleteUserChat = async (req, res) => {
+  const chatId = req.query.id;
+  // Error Handling
+  if (!chatId) {
+    return res
+      .status(400)
+      .json({ message: 'Deleting a Chat Requires a Chat ID' });
+  } if (!validateId(chatId)) {
+    return res.status(400).json({ message: `Invalid Chat ID ${chatId}` });
+  }
+
+  try {
+    await Chat.deleteOne({ _id: chatId });
+    return res.status(200).json({ message: 'Chat Deleted Successfully' });
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ message: `Error While Deleting Chat: ${err.message}` });
+  }
 };
 
 module.exports = {
