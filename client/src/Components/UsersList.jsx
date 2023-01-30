@@ -1,39 +1,22 @@
-/* eslint-disable prefer-destructuring */
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getAvatarSrc } from '../Utilities/utilities';
-import { useChat } from '../Context/ChatProvider';
-import { createOrFetchChat } from '../Utilities/apiRequests';
+import getAvatarSrc from '../Utilities/utilities';
 import ListWrapper, { ListItem } from './ListWrapper';
 
-function UsersList({ users, clearSearch }) {
+function UsersList({ users, handleClick }) {
   return (
     <ListWrapper>
       {users.map((user) => (
-        <User key={user._id} user={user} clearSearch={clearSearch} />
+        <User key={user._id} user={user} handleClick={handleClick} />
       ))}
     </ListWrapper>
   );
 }
 
-// eslint-disable-next-line no-unused-vars
-function User({ user, clearSearch }) {
-  const {
-    user: loggedInUser, setSelectedChat, chats, setChats,
-  } = useChat();
-
-  const createChat = async () => {
-    const { data } = await createOrFetchChat(loggedInUser.token, user._id);
-    setSelectedChat(data);
-    if (!chats.some((c) => c._id === data._id)) {
-      setChats([data, ...chats]);
-    }
-    clearSearch();
-  };
-
+function User({ user, handleClick }) {
   return (
     <ListItem
-      handleClick={createChat}
+      handleClick={() => handleClick(user)}
       text={user.name}
       subText={user.email}
       photo={getAvatarSrc(user.photo)}
@@ -51,7 +34,7 @@ UsersList.propTypes = {
       photo: PropTypes.string.isRequired,
     }),
   ).isRequired,
-  clearSearch: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 User.propTypes = {
@@ -61,7 +44,7 @@ User.propTypes = {
     email: PropTypes.string.isRequired,
     photo: PropTypes.string.isRequired,
   }).isRequired,
-  clearSearch: PropTypes.func.isRequired,
+  handleClick: PropTypes.func.isRequired,
 };
 
 export default UsersList;

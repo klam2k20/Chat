@@ -31,13 +31,14 @@ function ChatModal({ isOpen, onClose }) {
     try {
       const { data } =
         selectedUsers.length === 1
-          ? await createOrFetchChat(user.token, selectedUsers[0])
+          ? await createOrFetchChat(user.token, selectedUsers[0]._id)
           : await createOrFetchGroupChat(
             user.token,
             name,
             JSON.stringify(selectedUsers.map((u) => u._id)),
           );
       setSelectedChat(data);
+      setSelectedUsers([]);
       onClose();
     } catch (e) {
       toast({

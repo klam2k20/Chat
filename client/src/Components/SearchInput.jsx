@@ -4,8 +4,7 @@ import React, { useState, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { useChat } from '../Context/ChatProvider';
 import { getUsers } from '../Utilities/apiRequests';
-import { getAvatarSrc } from '../Utilities/utilities';
-import { ListItem } from './ListWrapper';
+import UsersList from './UsersList';
 
 function SearchInput({ search, setSearch, selectedUsers, setSelectedUsers }) {
   const [searchResults, setSearchResults] = useState([]);
@@ -80,15 +79,7 @@ function SearchInput({ search, setSearch, selectedUsers, setSelectedUsers }) {
 
       <Box display="flex" flexDirection="column" width="full">
         {searchResults.length > 0 &&
-          searchResults.map((u) => (
-            <ListItem
-              key={u._id}
-              handleClick={() => addUser(u)}
-              text={u.name}
-              subText={u.email}
-              photo={getAvatarSrc(u.photo)}
-            />
-          ))}
+          <UsersList users={searchResults} handleClick={addUser} />}
       </Box>
     </Box>
   );

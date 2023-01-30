@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useToast } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import { getAvatarSrc, getChatname } from '../Utilities/utilities';
+import getAvatarSrc from '../Utilities/utilities';
 import { useChat } from '../Context/ChatProvider';
 import { getChats } from '../Utilities/apiRequests';
 import ListWrapper, { ListItem } from './ListWrapper';
 
-function ChatsList() {
-  const { user, chats, setChats } = useChat();
+function ChatsList({ chats }) {
+  const { user, setChats } = useChat();
   const toast = useToast();
 
   useEffect(() => {
@@ -49,13 +49,30 @@ function Chat({ chat }) {
   return (
     <ListItem
       handleClick={selectChat}
-      text={getChatname(user, chat)}
+      text={chat.chatName}
       subText="Latest Message"
       photo={getAvatarSrc(user.photo)}
       isSelected={(selectedChat && selectedChat._id === chat._id)}
     />
   );
 }
+
+ChatsList.propTypes = {
+  chats: PropTypes.arrayOf(
+    PropTypes.shape({
+      _id: PropTypes.string.isRequired,
+      chatName: PropTypes.string.isRequired,
+      groupChat: PropTypes.bool.isRequired,
+      latestMessage: PropTypes.string,
+      groupAdmin: PropTypes.shape({
+        _id: PropTypes.string.isRequired,
+        name: PropTypes.string.isRequired,
+        email: PropTypes.string.isRequired,
+        photo: PropTypes.string.isRequired,
+      }),
+    }),
+  ).isRequired,
+};
 
 Chat.propTypes = {
   chat: PropTypes.shape({

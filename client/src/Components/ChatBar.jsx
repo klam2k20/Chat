@@ -5,42 +5,28 @@ import {
   InputRightAddon,
   Input,
   Button,
-  useToast,
   Text,
   useDisclosure,
 } from '@chakra-ui/react';
 import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
-import UsersList from './UsersList';
 import ChatsList from './ChatsList';
-import { getUsers } from '../Utilities/apiRequests';
-import GroupModal from './Modal/ChatModal';
+import ChatModal from './Modal/ChatModal';
 
 function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
-  const toast = useToast();
-  const { user } = useChat();
+  const { chats } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleSearch = async (e) => {
     const query = e.target.value;
     setSearch(query);
     if (query) {
-      try {
-        const res = await getUsers(user.token, query);
-        setResult(res.data.slice(0, 8));
-      } catch (err) {
-        toast({
-          title: 'Invalid Search',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-      }
-    } else {
-      setResult([]);
+      const filterChats = chats.filter(
+        (c) => c.chatName.toLowerCase().startsWith(query.toLowerCase()),
+      );
+      setResult(filterChats);
     }
   };
 
@@ -67,7 +53,7 @@ function ChatBar() {
         <Button bg="white" onClick={onOpen}>
           <EditIcon fontSize="xl" />
         </Button>
-        <GroupModal isOpen={isOpen} onClose={onClose} />
+        <ChatModal isOpen={isOpen} onClose={onClose} />
       </Box>
       <Box>
         <InputGroup>
@@ -85,9 +71,9 @@ function ChatBar() {
       </Box>
 
       {search ? (
-        result.length > 0 && (<UsersList users={result} clearSearch={() => setSearch('')} />)
+        result.length > 0 && <ChatsList chats={result} />
       ) : (
-        <ChatsList />
+        <ChatsList chats={chats} />
       )}
     </Box>
   );
