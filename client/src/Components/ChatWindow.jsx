@@ -3,6 +3,7 @@ import { Box, Divider, Input, Text } from '@chakra-ui/react';
 import React from 'react';
 import { useChat } from '../Context/ChatProvider';
 import { getChatName } from '../Utilities/utilities';
+import GroupModal from './Modal/GroupModal';
 import ProfileModal from './Modal/ProfileModal';
 
 function ChatWindow() {
@@ -32,9 +33,14 @@ function ChatWindowHeader() {
     <Box display="flex" flexDirection="column" gap="1rem">
       <Box display="flex" alignItems="center" justifyContent="space-between">
         <Text>{getChatName(user, selectedChat)}</Text>
-        <ProfileModal user={selectedChat.users.filter((u) => u._id !== user._id)[0]}>
-          <InfoOutlineIcon />
-        </ProfileModal>
+        {
+          selectedChat.groupChat ?
+            <GroupModal chat={selectedChat}><InfoOutlineIcon /></GroupModal> : (
+              <ProfileModal user={selectedChat.users.filter((u) => u._id !== user._id)[0]}>
+                <InfoOutlineIcon />
+              </ProfileModal>
+            )
+        }
       </Box>
       <Divider colorScheme="gray" />
     </Box>
