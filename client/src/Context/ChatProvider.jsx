@@ -11,6 +11,7 @@ export default function ChatProvider({ children }) {
   const [user, setUser] = useState();
   const [selectedChat, setSelectedChat] = useState();
   const [chats, setChats] = useState([]);
+  const [fetch, setFetch] = useState(false);
   const navigate = useNavigate();
   const value = React.useMemo(
     () => ({
@@ -22,16 +23,16 @@ export default function ChatProvider({ children }) {
       setSelectedChat,
       chats,
       setChats,
+      fetch,
+      setFetch,
     }),
-    [loggedIn, user, selectedChat, chats],
+    [loggedIn, user, selectedChat, chats, fetch],
   );
 
   useEffect(() => {
     const userInfo = JSON.parse(localStorage.getItem('user-info'));
-    console.log(userInfo);
     if (userInfo) setUser(userInfo);
     else {
-      console.log('Redirecting to Homepage');
       navigate('/');
     }
   }, [navigate, loggedIn]);

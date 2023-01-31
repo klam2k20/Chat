@@ -15,7 +15,6 @@ import { getChatName } from '../Utilities/utilities';
 function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
-  const [fetch, setFetch] = useState(false);
   const { user, chats } = useChat();
 
   const handleSearch = async (e) => {
@@ -54,10 +53,7 @@ function ChatBar() {
         <Text fontSize="xl" fontWeight="bold">
           Messages
         </Text>
-        <ChatModal
-          fetch={fetch}
-          setFetch={setFetch}
-        >
+        <ChatModal>
           <EditIcon fontSize="xl" />
         </ChatModal>
       </Box>
@@ -77,9 +73,9 @@ function ChatBar() {
       </Box>
 
       {search ? (
-        result.length > 0 && <ChatsList chats={result} fetch={fetch} />
+        result.length > 0 && <ChatsList chats={result} />
       ) : (
-        <ChatsList chats={chats} fetch={fetch} />
+        <ChatsList chats={chats} />
       )}
     </Box>
   );

@@ -6,8 +6,8 @@ import { useChat } from '../Context/ChatProvider';
 import { getChats } from '../Utilities/apiRequests';
 import ListWrapper, { ListItem } from './ListWrapper';
 
-function ChatsList({ chats, fetch }) {
-  const { user, setChats } = useChat();
+function ChatsList({ chats }) {
+  const { user, setChats, fetch } = useChat();
   const toast = useToast();
 
   useEffect(() => {
@@ -72,7 +72,6 @@ ChatsList.propTypes = {
       }),
     }),
   ).isRequired,
-  fetch: PropTypes.bool.isRequired,
 };
 
 Chat.propTypes = {

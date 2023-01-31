@@ -16,11 +16,11 @@ import SearchInput from '../SearchInput';
 import { useChat } from '../../Context/ChatProvider';
 import { createOrFetchChat, createOrFetchGroupChat } from '../../Utilities/apiRequests';
 
-function ChatModal({ children, fetch, setFetch }) {
+function ChatModal({ children }) {
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [active, setActive] = useState(false);
-  const { user, setSelectedChat } = useChat();
+  const { user, setSelectedChat, fetch, setFetch } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const toast = useToast();
 
@@ -96,8 +96,6 @@ function ChatModal({ children, fetch, setFetch }) {
 
 ChatModal.propTypes = {
   children: PropTypes.node.isRequired,
-  fetch: PropTypes.bool.isRequired,
-  setFetch: PropTypes.func.isRequired,
 };
 
 export default ChatModal;
