@@ -123,7 +123,7 @@ const createGroupChat = async (req, res) => {
   });
 };
 
-const renameChat = async (req, res) => {
+const renameGroupChat = async (req, res) => {
   const { chatId, chatName } = req.body;
   // Error Handling
   if (!chatId || !chatName) {
@@ -220,7 +220,7 @@ module.exports = {
   getUserChats,
   deleteUserChat,
   createGroupChat,
-  renameChat,
+  renameGroupChat,
   addToGroup,
   removeFromGroup,
 };
