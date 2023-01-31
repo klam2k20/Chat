@@ -60,6 +60,38 @@ const deleteUserChat = (token, chatId) => {
   );
 };
 
+const renameGroupChat = (token, chatId, chatName) => {
+  const header = {
+    'context-type': 'application/json',
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(baseUrl.concat('/api/chat/renameChat'), { chatId, chatName }, header);
+};
+
+const addToGroup = (token, chatId, userId) => {
+  const header = {
+    'context-type': 'application/json',
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(
+    baseUrl.concat('/api/chat/addToGroup'),
+    { chatId, userId },
+    header,
+  );
+};
+
+const removeFromGroup = (token, chatId, userId) => {
+  const header = {
+    'context-type': 'application/json',
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.put(
+    baseUrl.concat('/api/chat/removeFromGroup'),
+    { chatId, userId },
+    header,
+  );
+};
+
 export {
   loginUser,
   createUser,
@@ -67,5 +99,8 @@ export {
   getChats,
   createOrFetchChat,
   createOrFetchGroupChat,
+  renameGroupChat,
+  addToGroup,
+  removeFromGroup,
   deleteUserChat,
 };
