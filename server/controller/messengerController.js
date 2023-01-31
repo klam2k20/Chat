@@ -27,8 +27,23 @@ const sendMessage = async (req, res) => {
   });
 };
 
-// const getMessages = async (req, res) => {
-//   console.log('get messages');
-// };
+const getMessages = async (req, res) => {
+  const chatId = req.params.chat;
 
-module.exports = { sendMessage };
+  // Error Handling
+  if (!chatId) {
+    return res
+      .status(400)
+      .json({ message: 'Fetching Messages For a Chat Requires a Chat ID' });
+  }
+  if (!validateId(chatId)) res.status(400).json({ message: 'Invalid Chat ID' });
+
+  try {
+    const messages = await Message.find({ chat: chatId }).populate('sender', '-password').populate('chat');
+    return res.json(messages);
+  } catch (err) {
+    return res.status(400).json({ message: `Error While Fetching Messages for Chat ${chatId}` });
+  }
+};
+
+module.exports = { sendMessage, getMessages };
