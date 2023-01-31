@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import {
   Box,
   InputGroup,
-  InputRightAddon,
   Input,
-  Button,
   Text,
+  InputLeftAddon,
 } from '@chakra-ui/react';
 import { SearchIcon, EditIcon } from '@chakra-ui/icons';
 import { useChat } from '../Context/ChatProvider';
@@ -64,6 +63,9 @@ function ChatBar() {
       </Box>
       <Box>
         <InputGroup>
+          <InputLeftAddon bg="white">
+            <SearchIcon fontSize="sm" />
+          </InputLeftAddon>
           <Input
             type="text"
             placeholder="Search"
@@ -71,9 +73,6 @@ function ChatBar() {
             value={search}
             onChange={(e) => handleSearch(e)}
           />
-          <InputRightAddon as={Button} bg="white">
-            <SearchIcon fontSize="sm" />
-          </InputRightAddon>
         </InputGroup>
       </Box>
 
