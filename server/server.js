@@ -14,6 +14,7 @@ app.use(express.json());
 // Mounts the middleware at path /api/user, then router sets the subpath
 app.use('/api/user', require('./routes/userRouter'));
 app.use('/api/chat', require('./routes/chatRouter'));
+app.use('/api/message', require('./routes/messageRouter'));
 
 app.use(notFound404);
 
