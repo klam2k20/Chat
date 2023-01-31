@@ -50,16 +50,6 @@ const createOrFetchGroupChat = (token, chatName, userIds) => {
   return axios.post(baseUrl.concat('/api/chat/group'), { chatName, userIds }, header);
 };
 
-const deleteUserChat = (token, chatId) => {
-  const header = {
-    headers: { Authorization: `Bearer ${token}` },
-  };
-  return axios.delete(
-    baseUrl.concat(`/api/chat?id=${chatId}`),
-    header,
-  );
-};
-
 const renameGroupChat = (token, chatId, chatName) => {
   const header = {
     'context-type': 'application/json',
@@ -96,6 +86,21 @@ const removeFromGroup = (token, chatId, userId) => {
   );
 };
 
+const sendMessage = (token, chat, content) => {
+  const header = {
+    'context-type': 'application/json',
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.post(baseUrl.concat('/api/message'), { chat, content }, header);
+};
+
+const getMessages = (token, chatId) => {
+  const header = {
+    headers: { Authorization: `Bearer ${token}` },
+  };
+  return axios.get(baseUrl.concat(`/api/message/${chatId}`), header);
+};
+
 export {
   loginUser,
   createUser,
@@ -106,5 +111,6 @@ export {
   renameGroupChat,
   addToGroup,
   removeFromGroup,
-  deleteUserChat,
+  sendMessage,
+  getMessages,
 };
