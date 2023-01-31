@@ -32,7 +32,7 @@ function ChatWindowHeader() {
   return (
     <Box display="flex" flexDirection="column" gap="1rem">
       <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Text>{getChatName(user, selectedChat)}</Text>
+        <Text>{getChatName(user._id, selectedChat)}</Text>
         {
           selectedChat.groupChat ?
             <GroupModal chat={selectedChat}><InfoOutlineIcon /></GroupModal> : (
