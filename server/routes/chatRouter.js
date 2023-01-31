@@ -6,15 +6,13 @@ const {
   renameGroupChat,
   addToGroup,
   removeFromGroup,
-  deleteUserChat,
 } = require('../controller/chatController');
 const { authenicateToken } = require('../middleware/middleware');
 
 const router = express.Router();
 
 router.route('/').post(authenicateToken, createChat)
-  .get(authenicateToken, getUserChats)
-  .delete(authenicateToken, deleteUserChat);
+  .get(authenicateToken, getUserChats);
 
 router.route('/group').post(authenicateToken, createGroupChat);
 router.route('/renameGroupChat').put(authenicateToken, renameGroupChat);

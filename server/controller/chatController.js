@@ -2,8 +2,10 @@ const { mongoose } = require('mongoose');
 const { Chat, User } = require('../model/models');
 const { validateId } = require('../utilities/utilities');
 
+// POST /api/chat
 const createChat = async (req, res) => {
   const { userId } = req.body;
+
   // Error Handling
   if (!userId) {
     return res
@@ -21,23 +23,24 @@ const createChat = async (req, res) => {
     return res.status(404).json({ message: 'User Not Found' });
   }
 
-  const isChat = await Chat.findOne({
+  let isChat = await Chat.findOne({
     groupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
-  })
-    .populate('users', '-password')
+  }).populate('users', '_id name email photo')
     .populate('latestMessage', '-chat');
-  // Don't undersstand this yet not sure if needed
-  // isChat = await User.populate(isChat, {
-  // path: 'latestMessage.sender',
-  // select: 'name pic email',
-  // });
+  isChat = await User.populate(isChat, {
+    path: 'latestMessage.sender',
+    select: '_id name email photo',
+  });
   if (isChat) return res.status(200).json(isChat);
 
   const chat = Chat({ chatName: 'sender', users: [req.user._id, userId] });
-  await chat.save(async (err) => {
+  await chat.save(async (err, result) => {
     if (!err) {
-      const newChat = await Chat.find({ _id: chat._id }).populate('users', '-password');
+      const newChat = await Chat.find({ _id: result._id }).populate(
+        'users',
+        '_id name email photo',
+      );
       return res.status(201).json(newChat[0]);
     }
     return res
@@ -46,20 +49,21 @@ const createChat = async (req, res) => {
   });
 };
 
+// GET /api/chat
 const getUserChats = async (req, res) => {
   const chats = await Chat.find({ users: req.user._id })
-    .populate('users', '-password')
+    .populate('users', '_id name email photo')
     .populate('latestMessage', '-chat')
-    .populate('groupAdmin', '-password')
+    .populate('groupAdmin', '_id name email photo')
     .sort({ updatedAt: -1 });
-
-  // chats = await User.populate(chats, {
-  // path: 'latestMessage.sender',
-  // select: 'name pic email',
-  // });
-  res.status(200).json(chats);
+  await User.populate(chats, {
+    path: 'latestMessage.sender',
+    select: '_id name pic email',
+  });
+  return res.status(200).json(chats);
 };
 
+// POST /api/chat/group
 const createGroupChat = async (req, res) => {
   const { userIds } = req.body;
 
@@ -101,20 +105,23 @@ const createGroupChat = async (req, res) => {
       { users: { $all: allObjectIds } },
       // { $setEquals: ['users', allUserIds] },
     ],
-  })
-    .populate('users', '-password')
+  }).populate('users', '-password')
     .populate('groupAdmin', '-password')
     .populate('latestMessage', '-chat');
-  if (isGroupChat.length) return res.status(200).json(isGroupChat[0]);
+  if (isGroupChat.length) {
+    User.populate(isGroupChat[0], { path: 'latestMessage.sender', select: '_id name email photo' });
+    return res.status(200).json(isGroupChat[0]);
+  }
+
   const groupChat = Chat({
     chatName: 'group',
     groupChat: true,
     users: allUserIds,
     groupAdmin: req.user._id.toString(),
   });
-  groupChat.save(async (err) => {
+  groupChat.save(async (err, result) => {
     if (!err) {
-      const chat = await Chat.find({ _id: groupChat._id })
+      const chat = await Chat.find({ _id: result._id })
         .populate('users', '-password')
         .populate('groupAdmin', '-password');
       return res.status(201).json(chat[0]);
@@ -123,8 +130,10 @@ const createGroupChat = async (req, res) => {
   });
 };
 
+// PUT /api/chat/renameGroupChat
 const renameGroupChat = async (req, res) => {
   const { chatId, chatName } = req.body;
+
   // Error Handling
   if (!chatId || !chatName) {
     return res
@@ -139,11 +148,14 @@ const renameGroupChat = async (req, res) => {
     .populate('groupAdmin', '-password');
   if (!chat) return res.status(404).json('Chat Not Found');
   // Status Code 204 Doesn't Return Anything
+  await User.populate(chat, { path: 'latestMessage.sender', sender: '_id name email photo' });
   return res.json(chat);
 };
 
+// PUT /api/chat/addToGroup
 const addToGroup = async (req, res) => {
   const { chatId, userId } = req.body;
+
   // Error Handling
   if (!chatId || !userId) {
     return res
@@ -165,9 +177,11 @@ const addToGroup = async (req, res) => {
     .populate('users', '-password')
     .populate('groupAdmin', '-password');
   if (!chat) return res.status(404).json('Chat Not Found');
+  await User.populate(chat, { path: 'latestMessage.sender', select: '_id name email photo' });
   return res.json(chat);
 };
 
+// PUT /api/chat/removeFromGroup
 const removeFromGroup = async (req, res) => {
   const { chatId, userId } = req.body;
   // Error Handling
@@ -191,34 +205,16 @@ const removeFromGroup = async (req, res) => {
     .populate('users', '-password')
     .populate('groupAdmin', '-password');
   if (!chat) return res.status(404).json('Chat Not Found');
+  await User.populate(chat, {
+    path: 'latestMessage.sender',
+    select: '_id name email photo',
+  });
   return res.json(chat);
-};
-
-const deleteUserChat = async (req, res) => {
-  const chatId = req.query.id;
-  // Error Handling
-  if (!chatId) {
-    return res
-      .status(400)
-      .json({ message: 'Deleting a Chat Requires a Chat ID' });
-  } if (!validateId(chatId)) {
-    return res.status(400).json({ message: `Invalid Chat ID ${chatId}` });
-  }
-
-  try {
-    await Chat.deleteOne({ _id: chatId });
-    return res.status(200).json({ message: 'Chat Deleted Successfully' });
-  } catch (err) {
-    return res
-      .status(400)
-      .json({ message: `Error While Deleting Chat: ${err.message}` });
-  }
 };
 
 module.exports = {
   createChat,
   getUserChats,
-  deleteUserChat,
   createGroupChat,
   renameGroupChat,
   addToGroup,
