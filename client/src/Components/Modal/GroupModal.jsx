@@ -4,6 +4,7 @@ import {
   AvatarGroup,
   Box,
   Button,
+  Input,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,9 +15,9 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useChat } from '../../Context/ChatProvider';
-import { addToGroup, removeFromGroup } from '../../Utilities/apiRequests';
+import { addToGroup, removeFromGroup, renameGroupChat } from '../../Utilities/apiRequests';
 import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 import SearchInput from '../SearchInput';
 
@@ -25,8 +26,13 @@ function GroupModal({ children, chat }) {
   const { user, setSelectedChat, fetch, setFetch } = useChat();
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
+  const [chatName, setChatName] = useState(getChatName(user._id, chat));
   const users = chat.users.filter((u) => u._id !== user._id);
   const toast = useToast();
+
+  useEffect(() => {
+    setChatName(getChatName(user._id, chat));
+  }, [chat]);
 
   const removeUserFromGroup = async (removeUserId) => {
     try {
@@ -65,6 +71,22 @@ function GroupModal({ children, chat }) {
     }
   };
 
+  const renameChat = async () => {
+    try {
+      const { data } = await renameGroupChat(user.token, chat._id, chatName);
+      setSelectedChat(data);
+      setFetch(!fetch);
+    } catch (err) {
+      toast({
+        title: 'Error Renaming Chat',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+    }
+  };
+
   return (
     <>
       <Box onClick={onOpen}>{children}</Box>
@@ -94,7 +116,15 @@ function GroupModal({ children, chat }) {
                 Name:
               </Text>
               <Text w="75%" isTruncated>
-                {getChatName(user._id, chat)}
+                <Input
+                  border="none"
+                  borderRadius="none"
+                  p={0}
+                  type="text"
+                  value={chatName}
+                  onChange={(e) => setChatName(e.target.value)}
+                  onBlur={() => renameChat()}
+                />
               </Text>
             </Box>
             <Box
@@ -131,7 +161,7 @@ function GroupModal({ children, chat }) {
                 selectedUsers={selectedUsers}
                 setSelectedUsers={setSelectedUsers}
               />
-              <Box as={Button} m="1rem" onClick={addUsersToGroup}>
+              <Box as={Button} m="1rem" bg="white" onClick={addUsersToGroup}>
                 <AddIcon />
               </Box>
             </Box>

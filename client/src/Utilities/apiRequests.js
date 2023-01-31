@@ -65,7 +65,11 @@ const renameGroupChat = (token, chatId, chatName) => {
     'context-type': 'application/json',
     headers: { Authorization: `Bearer ${token}` },
   };
-  return axios.put(baseUrl.concat('/api/chat/renameChat'), { chatId, chatName }, header);
+  return axios.put(
+    baseUrl.concat('/api/chat/renameGroupChat'),
+    { chatId, chatName },
+    header,
+  );
 };
 
 const addToGroup = (token, chatId, userId) => {
