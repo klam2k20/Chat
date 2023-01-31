@@ -3,9 +3,7 @@ import {
   Avatar,
   AvatarGroup,
   Box,
-  Input,
-  InputGroup,
-  InputRightAddon,
+  Button,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -16,13 +14,17 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 import { useChat } from '../../Context/ChatProvider';
-import { removeFromGroup } from '../../Utilities/apiRequests';
+import { addToGroup, removeFromGroup } from '../../Utilities/apiRequests';
 import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
+import SearchInput from '../SearchInput';
 
 function GroupModal({ children, chat }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, setSelectedChat, fetch, setFetch } = useChat();
+  const [search, setSearch] = useState('');
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const users = chat.users.filter((u) => u._id !== user._id);
   const toast = useToast();
 
@@ -34,6 +36,27 @@ function GroupModal({ children, chat }) {
     } catch (err) {
       toast({
         title: 'Error Removing User from Group',
+        status: 'error',
+        duration: 5000,
+        isClosable: true,
+        position: 'bottom',
+      });
+    }
+  };
+
+  const addUsersToGroup = async () => {
+    try {
+      if (selectedUsers.length) {
+        selectedUsers.forEach(async (u) => {
+          const { data } = await addToGroup(user.token, chat._id, u._id);
+          setSelectedChat(data);
+          setFetch(!fetch);
+        });
+      }
+      setSelectedUsers([]);
+    } catch (err) {
+      toast({
+        title: `Error Adding ${selectedUsers.length === 1 ? 'User' : 'Users'} To Group`,
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -96,12 +119,22 @@ function GroupModal({ children, chat }) {
                 />
               ))}
             </Box>
-            <InputGroup w="100%">
-              <Input text="text" placeholder="Add..." />
-              <InputRightAddon bg="white">
+            <Box
+              display="flex"
+              justifyContent="space-between"
+              alignItems="center"
+              w="100%"
+            >
+              <SearchInput
+                search={search}
+                setSearch={setSearch}
+                selectedUsers={selectedUsers}
+                setSelectedUsers={setSelectedUsers}
+              />
+              <Box as={Button} m="1rem" onClick={addUsersToGroup}>
                 <AddIcon />
-              </InputRightAddon>
-            </InputGroup>
+              </Box>
+            </Box>
           </ModalBody>
         </ModalContent>
       </Modal>
