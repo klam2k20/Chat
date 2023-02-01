@@ -1,5 +1,6 @@
 import { Avatar, Box, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { getAvatarSrc } from '../Utilities/utilities';
 
@@ -78,4 +79,5 @@ ChatWindowContent.propTypes = {
   ).isRequired,
   userId: PropTypes.string.isRequired,
 };
-export default ChatWindowContent;
+
+export default React.memo(ChatWindowContent);
