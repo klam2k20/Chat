@@ -9,7 +9,7 @@ function ChatWindowContent({ messages, userId }) {
       display="flex"
       flexDirection="column"
       mt="auto"
-      gap="0.5rem"
+      gap="1rem"
       width="100%"
       overflowY="scroll"
       sx={{
@@ -17,6 +17,7 @@ function ChatWindowContent({ messages, userId }) {
           display: 'none',
         },
       }}
+      py="0.5rem"
     >
       {messages.map((m) => (
         <Box
@@ -24,6 +25,7 @@ function ChatWindowContent({ messages, userId }) {
           display="flex"
           gap="0.5rem"
           alignSelf={m[0].sender._id === userId ? 'end' : 'start'}
+          maxW="50%"
         >
           <Box h="100%" display="flex" alignItems="end">
             {m[0].sender._id === userId ? (
@@ -41,6 +43,7 @@ function ChatWindowContent({ messages, userId }) {
             flexDirection="column"
             alignItems={m[0].sender._id === userId ? 'end' : 'start'}
             gap="0.15rem"
+            w="100%"
           >
             {m.map((c) => (
               <Text
@@ -50,7 +53,6 @@ function ChatWindowContent({ messages, userId }) {
                 px=".75rem"
                 bg={c.sender._id === userId ? '#204FA1' : '#e0e0e0'}
                 color={c.sender._id === userId ? 'white' : 'black'}
-                maxW="40%"
               >
                 {c.content}
               </Text>
