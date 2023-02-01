@@ -12,4 +12,22 @@ const getChatName = (userId, chat) => {
   }, '').slice(0, -2);
 };
 
-export { getAvatarSrc, getChatName };
+const splitMessages = (messages) => {
+  const res = [];
+  let chunk = [];
+  const lastIndex = messages.length - 1;
+  messages.forEach((m, i) => {
+    if (m._id !== messages[lastIndex]._id) {
+      chunk.push(m);
+      if (m.sender._id !== messages[i + 1].sender._id) {
+        res.push(chunk);
+        chunk = [];
+      }
+    }
+  });
+  chunk.push(messages[lastIndex]);
+  res.push(chunk);
+  return res;
+};
+
+export { getAvatarSrc, getChatName, splitMessages };

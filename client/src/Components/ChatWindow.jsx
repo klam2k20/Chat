@@ -1,13 +1,58 @@
 import { ChatIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import { Box, Divider, Input, Text } from '@chakra-ui/react';
-import React from 'react';
+import { Box, Divider, Input, Text, useToast } from '@chakra-ui/react';
+import React, { useState, useEffect } from 'react';
 import { useChat } from '../Context/ChatProvider';
-import { getChatName } from '../Utilities/utilities';
+import { getChatName, splitMessages } from '../Utilities/utilities';
+import { getMessages, sendMessage } from '../Utilities/apiRequests';
 import GroupModal from './Modal/GroupModal';
 import ProfileModal from './Modal/ProfileModal';
+import ChatWindowContent from './ChatWindowContent';
 
 function ChatWindow() {
-  const { selectedChat } = useChat();
+  const { user, selectedChat } = useChat();
+  const [messages, setMessages] = useState([]);
+  const [message, setMessage] = useState('');
+  const toast = useToast();
+
+  const sendChatMessage = async (e) => {
+    if (message && e.key === 'Enter') {
+      try {
+        setMessage('');
+        const { data } = await sendMessage(user.token, selectedChat._id, message);
+        setMessages([...messages, data]);
+      } catch (err) {
+        toast({
+          title: 'Error While Sending Messages',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
+    }
+  };
+
+  useEffect(() => {
+    const getChatMessages = async () => {
+      if (selectedChat) {
+        try {
+          const { data } = await getMessages(user.token, selectedChat._id);
+          setMessages(data);
+        } catch (err) {
+          toast({
+            title: 'Error While Fetching Chat Messages',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom',
+          });
+        }
+      }
+    };
+
+    getChatMessages();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat]);
 
   return (
     <Box flex={3} bg="white" borderRadius="md" p="1rem" w="70%">
@@ -19,7 +64,15 @@ function ChatWindow() {
           h="100%"
         >
           <ChatWindowHeader />
-          <Input type="text" placeholder="Message..." />
+          {messages.length > 0 &&
+            <ChatWindowContent messages={splitMessages(messages)} userId={user._id} />}
+          <Input
+            type="text"
+            placeholder="Message..."
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyDown={(e) => sendChatMessage(e)}
+          />
         </Box>
       ) : (
         <EmptyChatWindow />
@@ -27,6 +80,7 @@ function ChatWindow() {
     </Box>
   );
 }
+
 function ChatWindowHeader() {
   const { user, selectedChat } = useChat();
   return (

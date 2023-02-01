@@ -9,6 +9,7 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
+  ModalFooter,
   ModalOverlay,
   Text,
   useDisclosure,
@@ -32,7 +33,7 @@ function GroupModal({ children, chat }) {
 
   useEffect(() => {
     setChatName(getChatName(user._id, chat));
-  }, [chat]);
+  }, [chat, user]);
 
   const removeUserFromGroup = async (removeUserId) => {
     try {
@@ -166,6 +167,11 @@ function GroupModal({ children, chat }) {
               </Box>
             </Box>
           </ModalBody>
+          <ModalFooter>
+            <Button colorScheme="red" onClick={() => { removeUserFromGroup(user._id); onClose(); }}>
+              Leave Group
+            </Button>
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>
