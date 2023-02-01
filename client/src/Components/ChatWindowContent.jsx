@@ -65,13 +65,17 @@ function ChatWindowContent({ messages, userId }) {
 }
 
 ChatWindowContent.propTypes = {
-  messages: PropTypes.arrayOf(PropTypes.shape({
-    sender: PropTypes.shape({
-      _id: PropTypes.string,
-      name: PropTypes.string,
-      photo: PropTypes.string,
-    }),
-  })).isRequired,
+  messages: PropTypes.arrayOf(
+    PropTypes.arrayOf(
+      PropTypes.shape({
+        sender: PropTypes.shape({
+          _id: PropTypes.string,
+          name: PropTypes.string,
+          photo: PropTypes.string,
+        }),
+      }),
+    ),
+  ).isRequired,
   userId: PropTypes.string.isRequired,
 };
 export default ChatWindowContent;
