@@ -7,6 +7,7 @@ import { getMessages, sendMessage } from '../Utilities/apiRequests';
 import GroupModal from './Modal/GroupModal';
 import ProfileModal from './Modal/ProfileModal';
 import ChatWindowContent from './ChatWindowContent';
+import socket from '../Utilities/socket';
 
 function ChatWindow() {
   const { user, selectedChat } = useChat();
@@ -14,29 +15,18 @@ function ChatWindow() {
   const [message, setMessage] = useState('');
   const toast = useToast();
 
-  const sendChatMessage = async (e) => {
-    if (message && e.key === 'Enter') {
-      try {
-        setMessage('');
-        const { data } = await sendMessage(user.token, selectedChat._id, message);
-        setMessages([...messages, data]);
-      } catch (err) {
-        toast({
-          title: 'Error While Sending Messages',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-      }
-    }
-  };
+  useEffect(() => {
+    socket.connect();
+    setTimeout(() => socket.emit('setup', user._id), 1000);
+    return function cleanup() { socket.off(user._id); };
+  }, [user]);
 
   useEffect(() => {
     const getChatMessages = async () => {
       if (selectedChat) {
         try {
           const { data } = await getMessages(user.token, selectedChat._id);
+          socket.emit('join chat', selectedChat._id);
           setMessages(data);
         } catch (err) {
           toast({
@@ -51,8 +41,33 @@ function ChatWindow() {
     };
 
     getChatMessages();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
+
+  useEffect(() => {
+    socket.on('received message', (newMessage) => {
+      setMessages((pre) => [...pre, newMessage]);
+    });
+  }, []);
+
+  const sendChatMessage = async (e) => {
+    if (message && e.key === 'Enter') {
+      try {
+        setMessage('');
+        const { data } = await sendMessage(user.token, selectedChat._id, message);
+        socket.emit('send message', data);
+        setMessages([...messages, data]);
+      } catch (err) {
+        toast({
+          title: 'Error While Sending Messages',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
+    }
+  };
 
   return (
     <Box flex={3} bg="white" borderRadius="md" p="1rem" w="70%">
