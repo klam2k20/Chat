@@ -113,6 +113,8 @@ function ChatWindow() {
             <ChatWindowContent messages={splitMessages(messages)} userId={user._id} />}
           {typing ? <Box maxW="fit-content" maxH="10%"><Lottie options={defaultOptions} /></Box> : <div />}
           <Input
+            py="0.25rem"
+            px=".5rem"
             type="text"
             placeholder="Message..."
             value={message}
