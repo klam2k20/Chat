@@ -72,7 +72,7 @@ const chatSchema = new Schema(
       },
     ],
     latestMessage: {
-      type: String,
+      type: Schema.Types.ObjectId,
       ref: 'Message',
     },
     groupAdmin: {

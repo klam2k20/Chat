@@ -27,7 +27,7 @@ const createChat = async (req, res) => {
     groupChat: false,
     $and: [{ users: userId }, { users: req.user._id }],
   }).populate('users', '_id name email photo')
-    .populate('latestMessage', '-chat');
+    .populate('latestMessage', '_id sender content');
   isChat = await User.populate(isChat, {
     path: 'latestMessage.sender',
     select: '_id name email photo',
@@ -53,7 +53,7 @@ const createChat = async (req, res) => {
 const getUserChats = async (req, res) => {
   const chats = await Chat.find({ users: req.user._id })
     .populate('users', '_id name email photo')
-    .populate('latestMessage', '-chat')
+    .populate('latestMessage', '_id sender content')
     .populate('groupAdmin', '_id name email photo')
     .sort({ updatedAt: -1 });
   await User.populate(chats, {
@@ -105,9 +105,10 @@ const createGroupChat = async (req, res) => {
       { users: { $all: allObjectIds } },
       // { $setEquals: ['users', allUserIds] },
     ],
-  }).populate('users', '-password')
-    .populate('groupAdmin', '-password')
-    .populate('latestMessage', '-chat');
+  })
+    .populate('users', '_id name email photo')
+    .populate('groupAdmin', '_id name email photo')
+    .populate('latestMessage', '_id sender content');
   if (isGroupChat.length) {
     User.populate(isGroupChat[0], { path: 'latestMessage.sender', select: '_id name email photo' });
     return res.status(200).json(isGroupChat[0]);
@@ -122,8 +123,8 @@ const createGroupChat = async (req, res) => {
   groupChat.save(async (err, result) => {
     if (!err) {
       const chat = await Chat.find({ _id: result._id })
-        .populate('users', '-password')
-        .populate('groupAdmin', '-password');
+        .populate('users', '_id name email photo')
+        .populate('groupAdmin', '_id name email photo');
       return res.status(201).json(chat[0]);
     }
     return res.status(400).json({ message: `Error While Creating Group Chat ${err.message}` });
@@ -144,8 +145,8 @@ const renameGroupChat = async (req, res) => {
   }
 
   const chat = await Chat.findByIdAndUpdate(chatId, { chatName }, { new: true })
-    .populate('users', '-password')
-    .populate('groupAdmin', '-password');
+    .populate('users', '_id name email photo')
+    .populate('groupAdmin', '_id name email photo');
   if (!chat) return res.status(404).json('Chat Not Found');
   // Status Code 204 Doesn't Return Anything
   await User.populate(chat, { path: 'latestMessage.sender', sender: '_id name email photo' });
@@ -174,8 +175,8 @@ const addToGroup = async (req, res) => {
     { $addToSet: { users: userId } },
     { new: true },
   )
-    .populate('users', '-password')
-    .populate('groupAdmin', '-password');
+    .populate('users', '_id name email photo')
+    .populate('groupAdmin', '_id name email photo');
   if (!chat) return res.status(404).json('Chat Not Found');
   await User.populate(chat, { path: 'latestMessage.sender', select: '_id name email photo' });
   return res.json(chat);
@@ -202,8 +203,8 @@ const removeFromGroup = async (req, res) => {
     { $pull: { users: userId } },
     { new: true },
   )
-    .populate('users', '-password')
-    .populate('groupAdmin', '-password');
+    .populate('users', '_id name email photo')
+    .populate('groupAdmin', '_id name email photo');
   if (!chat) return res.status(404).json('Chat Not Found');
   await User.populate(chat, {
     path: 'latestMessage.sender',

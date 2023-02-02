@@ -22,7 +22,11 @@ const sendMessage = async (req, res) => {
     if (!err) {
       await result.populate([{ path: 'sender', select: '_id name email photo' }, { path: 'chat' }]);
       await User.populate(result, { path: 'chat.users', select: '_id name email photo' });
-      Chat.findByIdAndUpdate(result._id, { latestMessage: result });
+      await Chat.findByIdAndUpdate(
+        chat,
+        { latestMessage: result },
+        { new: true },
+      );
       return res.json(result);
     }
     return res.status(400).json({ message: `Error While Sending Message ${err.message}` });
