@@ -8,7 +8,7 @@ function ChatWindowContent({ messages, userId }) {
   return (
     <Box
       display="flex"
-      flexDirection="column"
+      flexDirection="column-reverse"
       mt="auto"
       gap="1rem"
       width="100%"
@@ -20,7 +20,7 @@ function ChatWindowContent({ messages, userId }) {
       }}
       py="0.5rem"
     >
-      {messages.map((m) => (
+      {messages.reverse().map((m) => (
         <Box
           key={uuidv4()}
           display="flex"
