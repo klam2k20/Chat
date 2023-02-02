@@ -50,7 +50,7 @@ function Chat({ chat }) {
     <ListItem
       handleClick={selectChat}
       text={getChatName(user._id, chat)}
-      subText="Latest Message"
+      subText={chat.latestMessage.content}
       photo={getAvatarSrc(user.photo)}
       isSelected={(selectedChat && selectedChat._id === chat._id)}
     />

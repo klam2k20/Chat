@@ -45,7 +45,7 @@ function ListItem({
         <Text fontSize="lg" maxW="100%" isTruncated>
           {text}
         </Text>
-        <Text fontSize="lg" fontWeight="lighter">
+        <Text fontSize="lg" fontWeight="lighter" maxW="100%" isTruncated>
           {subText}
         </Text>
       </Box>

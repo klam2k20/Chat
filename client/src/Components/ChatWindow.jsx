@@ -21,7 +21,7 @@ const defaultOptions = {
 };
 
 function ChatWindow() {
-  const { user, selectedChat } = useChat();
+  const { user, selectedChat, setFetch } = useChat();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [typing, setTyping] = useState(false);
@@ -62,6 +62,7 @@ function ChatWindow() {
   useEffect(() => {
     socket.on('received message', (newMessage) => {
       setMessages((pre) => [...pre, newMessage]);
+      setFetch((pre) => !pre);
     });
   }, []);
 
@@ -73,6 +74,7 @@ function ChatWindow() {
         socket.emit('stop typing', selectedChat._id);
         socket.emit('send message', data);
         setMessages([...messages, data]);
+        setFetch((pre) => !pre);
       } catch (err) {
         toast({
           title: 'Error While Sending Messages',
