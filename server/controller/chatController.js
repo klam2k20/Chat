@@ -51,7 +51,9 @@ const createChat = async (req, res) => {
 
 // GET /api/chat
 const getUserChats = async (req, res) => {
-  const chats = await Chat.find({ users: req.user._id })
+  const chats = await Chat.find(
+    { $and: [{ users: req.user._id }, { latestMessage: { $ne: null } }] },
+  )
     .populate('users', '_id name email photo')
     .populate('latestMessage', '_id sender content')
     .populate('groupAdmin', '_id name email photo')
