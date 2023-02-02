@@ -1,6 +1,7 @@
 import { ChatIcon, InfoOutlineIcon } from '@chakra-ui/icons';
 import { Box, Divider, Input, Text, useToast } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
+import Lottie from 'react-lottie';
 import { useChat } from '../Context/ChatProvider';
 import { getChatName, splitMessages } from '../Utilities/utilities';
 import { getMessages, sendMessage } from '../Utilities/apiRequests';
@@ -8,6 +9,16 @@ import GroupModal from './Modal/GroupModal';
 import ProfileModal from './Modal/ProfileModal';
 import ChatWindowContent from './ChatWindowContent';
 import socket from '../Utilities/socket';
+import * as animationData from '../Animation/typing.json';
+
+const defaultOptions = {
+  loop: true,
+  autoplay: true,
+  animationData,
+  rendererSettings: {
+    preserveAspectRatio: 'xMidYMid slice',
+  },
+};
 
 function ChatWindow() {
   const { user, selectedChat } = useChat();
@@ -100,7 +111,7 @@ function ChatWindow() {
           <ChatWindowHeader />
           {messages.length > 0 &&
             <ChatWindowContent messages={splitMessages(messages)} userId={user._id} />}
-          {typing ? <div>typing</div> : <div />}
+          {typing ? <Box maxW="fit-content" maxH="10%"><Lottie options={defaultOptions} /></Box> : <div />}
           <Input
             type="text"
             placeholder="Message..."
