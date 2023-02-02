@@ -52,6 +52,14 @@ dbConnection
         }
       });
 
+      socket.on('typing', (chatId) => {
+        socket.broadcast.to(chatId).emit('typing');
+      });
+
+      socket.on('stop typing', (chatId) => {
+        socket.broadcast.to(chatId).emit('stop typing');
+      });
+
       socket.off('setup', (userId) => {
         socket.leave(userId);
       });

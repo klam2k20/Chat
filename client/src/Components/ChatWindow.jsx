@@ -13,11 +13,15 @@ function ChatWindow() {
   const { user, selectedChat } = useChat();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
+  const [typing, setTyping] = useState(false);
   const toast = useToast();
+  let timeout;
 
   useEffect(() => {
     socket.connect();
     setTimeout(() => socket.emit('setup', user._id), 1000);
+    socket.on('typing', () => setTyping(true));
+    socket.on('stop typing', () => setTyping(false));
     return function cleanup() { socket.off(user._id); };
   }, [user]);
 
@@ -55,6 +59,7 @@ function ChatWindow() {
       try {
         setMessage('');
         const { data } = await sendMessage(user.token, selectedChat._id, message);
+        socket.emit('stop typing', selectedChat._id);
         socket.emit('send message', data);
         setMessages([...messages, data]);
       } catch (err) {
@@ -69,6 +74,20 @@ function ChatWindow() {
     }
   };
 
+  const handleTyping = (e) => {
+    const stopTyping = () => {
+      socket.emit('stop typing', selectedChat._id);
+    };
+
+    setMessage(e.target.value);
+    if (!typing) {
+      socket.emit('typing', selectedChat._id);
+    } else {
+      clearTimeout(timeout);
+    }
+    timeout = setTimeout(stopTyping, 5000);
+  };
+
   return (
     <Box flex={3} bg="white" borderRadius="md" p="1rem" w="70%">
       {selectedChat ? (
@@ -81,12 +100,14 @@ function ChatWindow() {
           <ChatWindowHeader />
           {messages.length > 0 &&
             <ChatWindowContent messages={splitMessages(messages)} userId={user._id} />}
+          {typing ? <div>typing</div> : <div />}
           <Input
             type="text"
             placeholder="Message..."
             value={message}
-            onChange={(e) => setMessage(e.target.value)}
+            onChange={(e) => handleTyping(e)}
             onKeyDown={(e) => sendChatMessage(e)}
+            onBlur={() => socket.emit('stop typing', selectedChat._id)}
           />
         </Box>
       ) : (
