@@ -63,7 +63,9 @@ ChatsList.propTypes = {
       _id: PropTypes.string.isRequired,
       chatName: PropTypes.string.isRequired,
       groupChat: PropTypes.bool.isRequired,
-      latestMessage: PropTypes.string,
+      latestMessage: PropTypes.shape({
+        content: PropTypes.string,
+      }).isRequired,
       groupAdmin: PropTypes.shape({
         _id: PropTypes.string.isRequired,
         name: PropTypes.string.isRequired,
@@ -79,7 +81,9 @@ Chat.propTypes = {
     _id: PropTypes.string.isRequired,
     chatName: PropTypes.string.isRequired,
     groupChat: PropTypes.bool.isRequired,
-    latestMessage: PropTypes.string,
+    latestMessage: PropTypes.shape({
+      content: PropTypes.string,
+    }).isRequired,
     groupAdmin: PropTypes.shape({
       _id: PropTypes.string.isRequired,
       name: PropTypes.string.isRequired,
