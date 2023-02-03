@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import Login from '../Components/Auth/Login';
 import Signup from '../Components/Auth/Signup';
 import { useChat } from '../Context/ChatProvider';
+import { ReactComponent as Logo } from '../imgs/logo.svg';
 
 function Homepage() {
   const { setUser, setLoggedIn } = useChat();
@@ -44,6 +45,7 @@ function Homepage() {
         py="1rem"
         bg="#f5f5f5"
       >
+        <Logo />
         <Text fontSize={{ base: '4xl', md: '5xl' }} fontWeight="bold" color="#0F0D35">
           Connect-Me
         </Text>
