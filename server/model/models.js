@@ -75,10 +75,6 @@ const chatSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Message',
     },
-    groupAdmin: {
-      type: Schema.Types.ObjectId,
-      ref: 'User',
-    },
   },
   { timestamps: true },
 );
