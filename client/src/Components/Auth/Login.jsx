@@ -1,8 +1,14 @@
-import {
-  FormControl, FormLabel, Input, VStack,
-  InputGroup, InputRightAddon, Button, useToast,
-} from '@chakra-ui/react';
 import React, { useState } from 'react';
+import {
+  FormControl,
+  Input,
+  VStack,
+  InputGroup,
+  InputRightAddon,
+  Button,
+  useToast,
+} from '@chakra-ui/react';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { useNavigate } from 'react-router-dom';
 import { useChat } from '../../Context/ChatProvider';
 import { loginUser } from '../../Utilities/apiRequests';
@@ -16,6 +22,16 @@ function Login() {
   const toast = useToast();
   const navigate = useNavigate();
 
+  function customToast(title, status) {
+    return toast({
+      title,
+      status,
+      duration: 5000,
+      isClosable: true,
+      position: 'bottom',
+    });
+  }
+
   const toggleShow = () => {
     setShow(!show);
   };
@@ -23,14 +39,7 @@ function Login() {
   const submitForm = async () => {
     setLoading(true);
     if (!email || !password) {
-      toast({
-        title: 'Please Enter All Required Fields',
-        status: 'warning',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
-      setLoading(false);
+      customToast('Please Enter All Fields', 'warning');
     } else {
       try {
         const response = await loginUser(email, password);
@@ -39,27 +48,15 @@ function Login() {
         setLoggedIn(true);
         navigate('/chats');
       } catch (err) {
-        toast({
-          title: 'Invalid Email or Password',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-        setLoading(false);
+        customToast('Please Check the Entered Email and Password', 'error');
       }
     }
-  };
-
-  const setGuestCredentials = () => {
-    setEmail('guestLogin@gmail.com');
-    setPassword('password');
+    setLoading(false);
   };
 
   return (
-    <VStack spacing="0.5rem" mt="0.5rem">
-      <FormControl id="login-email" isRequired>
-        <FormLabel>Email</FormLabel>
+    <VStack spacing="1rem">
+      <FormControl isRequired>
         <Input
           type="email"
           placeholder="Email"
@@ -67,38 +64,31 @@ function Login() {
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id="login-password" isRequired>
-        <FormLabel>Password</FormLabel>
+      <FormControl isRequired>
         <InputGroup>
           <Input
+            borderRight="none"
             type={show ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputRightAddon>
-            <Button h="1.75rem" size="sm" onClick={toggleShow}>
-              {show ? 'Hide' : 'Show'}
+          <InputRightAddon bg="#f5f5f5" borderLeft="none">
+            <Button bg="#f5f5f5" _hover={{ background: '#e0e0e0' }} onClick={toggleShow}>
+              {show ? <ViewOffIcon /> : <ViewIcon />}
             </Button>
           </InputRightAddon>
         </InputGroup>
       </FormControl>
       <Button
         w="100%"
-        colorScheme="linkedin"
-        style={{ marginTop: '1rem' }}
+        bg="#204FA1"
+        color="#f5f5f5"
         onClick={submitForm}
         isLoading={loading}
+        _hover={{ background: '#183B77' }}
       >
         Login
-      </Button>
-      <Button
-        w="100%"
-        colorScheme="red"
-        onClick={setGuestCredentials}
-        isLoading={loading}
-      >
-        Guest Login Credentials
       </Button>
     </VStack>
   );

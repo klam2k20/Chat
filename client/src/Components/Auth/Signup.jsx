@@ -1,12 +1,14 @@
+/* eslint-disable no-unused-vars */
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import {
   Button,
   FormControl,
-  FormLabel,
   Input,
   InputGroup,
   InputRightAddon,
   VStack,
   useToast,
+  Box,
 } from '@chakra-ui/react';
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +20,22 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [setPhoto] = useState('');
+  const [photo, setPhoto] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
   const { setLoggedIn } = useChat();
   const toast = useToast();
   const navigate = useNavigate();
+
+  function customToast(title, status) {
+    return toast({
+      title,
+      status,
+      duration: 5000,
+      isClosable: true,
+      position: 'bottom',
+    });
+  }
 
   const toggleShow = () => {
     setShow(!show);
@@ -40,132 +52,111 @@ function Signup() {
       body: formData,
     }).then((response) => response.json())
       .then((data) => {
-        if (data.secure_url !== '') {
+        if (data.secure_url) {
           setPhoto(data.secure_url.toString());
-          setLoading(false);
         }
       }).catch((err) => {
-        toast({
-          title: `Error Uploading Photo: ${err.message}`,
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-        setLoading(false);
+        customToast(`Error Uploading Photo ${err.message}`, 'error');
       });
+    setLoading(false);
   };
 
   const submitForm = async () => {
     setLoading(true);
     if (!name || !email || !password || !confirmPassword) {
-      toast({
-        title: 'Please Enter All Required Fields',
-        status: 'warning',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
-      setLoading(false);
+      customToast('Please Enter All Fields', 'warning');
     } else if (password !== confirmPassword) {
-      toast({
-        title: 'Passwords Don\'t Match',
-        status: 'warning',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
-      setLoading(false);
+      customToast('Passwords Don\'t Match', 'warning');
     } else {
       try {
         const response = await createUser(name, email, password);
-        toast({
-          title: 'Registration Successful!',
-          status: 'success',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
+        customToast(`${name} Has Been Successfully Registered`, 'success');
         localStorage.setItem('user-info', JSON.stringify(response.data));
         setLoading(false);
         setLoggedIn(true);
         navigate('/chats');
       } catch (err) {
-        toast({
-          title: 'Registration Error',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
-        setLoading(false);
+        customToast(`Sorry, ${name} Could Not Be Registered`, 'error');
       }
     }
+    setLoading(false);
   };
 
   return (
-    <VStack spacing="0.5rem" mt="0.5rem">
-      <FormControl id="signup-name" isRequired>
-        <FormLabel>Name</FormLabel>
+    <VStack spacing="1rem">
+      <FormControl isRequired>
         <Input
           type="text"
+          placeholder="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
         />
       </FormControl>
-      <FormControl id="signup-email" isRequired>
-        <FormLabel>Email</FormLabel>
+      <FormControl isRequired>
         <Input
           type="email"
+          placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
       </FormControl>
-      <FormControl id="signup-password" isRequired>
-        <FormLabel>Password</FormLabel>
+      <FormControl isRequired>
         <InputGroup>
           <Input
+            borderRight="none"
             type={show ? 'text' : 'password'}
+            placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputRightAddon>
-            <Button h="1.75rem" size="sm" onClick={toggleShow}>
-              {show ? 'Hide' : 'Show'}
+          <InputRightAddon bg="#f5f5f5" borderLeft="none">
+            <Button
+              bg="#f5f5f5"
+              _hover={{ background: '#e0e0e0' }}
+              onClick={toggleShow}
+            >
+              {show ? <ViewOffIcon /> : <ViewIcon />}
             </Button>
           </InputRightAddon>
         </InputGroup>
       </FormControl>
-      <FormControl id="signup-confirmPassword" isRequired>
-        <FormLabel>Confirm Password</FormLabel>
+      <FormControl isRequired>
         <InputGroup>
           <Input
+            borderRight="none"
             type={show ? 'text' : 'password'}
+            placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <InputRightAddon>
-            <Button h="1.75rem" size="sm" onClick={toggleShow}>
-              {show ? 'Hide' : 'Show'}
+          <InputRightAddon bg="#f5f5f5" borderLeft="none">
+            <Button
+              bg="#f5f5f5"
+              _hover={{ background: '#e0e0e0' }}
+              onClick={toggleShow}
+            >
+              {show ? <ViewOffIcon /> : <ViewIcon />}
             </Button>
           </InputRightAddon>
         </InputGroup>
       </FormControl>
-      <FormControl id="signup-photo">
-        <FormLabel>Upload Photo</FormLabel>
-        <Input
-          variant="unstyled"
+      <label htmlFor="photo-upload" className="file-label">
+        <input
+          id="photo-upload"
           type="file"
+          title=" "
           accept="image/jpeg, image/png"
           onChange={(e) => selectPhoto(e.target.files[0])}
         />
-      </FormControl>
+        <span>Upload Photo</span>
+      </label>
       <Button
-        colorScheme="linkedin"
         w="100%"
-        style={{ marginTop: '1rem' }}
+        bg="#204FA1"
+        color="#f5f5f5"
         onClick={submitForm}
         isLoading={loading}
+        _hover={{ background: '#183B77' }}
       >
         Sign Up
       </Button>

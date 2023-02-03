@@ -17,6 +17,7 @@ import { useChat } from '../Context/ChatProvider';
 function Homepage() {
   const { setUser, setLoggedIn } = useChat();
   const navigate = useNavigate();
+
   useEffect(() => {
     const userInfo = localStorage.getItem('user-info');
     if (userInfo) {
@@ -28,23 +29,27 @@ function Homepage() {
   }, []);
 
   return (
-    <Container maxW="xl" centerContent>
+    <Container
+      display="flex"
+      flexDirection="column"
+      justifyContent="center"
+      gap="1rem"
+      h="100vh"
+    >
       <Box
         display="flex"
         justifyContent="center"
-        p={3}
-        m="2.5rem 0 1rem"
         borderRadius="md"
         borderWidth="1px"
-        w="100%"
-        bg="white"
+        py="1rem"
+        bg="#f5f5f5"
       >
-        <Text fontSize="4xl" color="#000">
+        <Text fontSize={{ base: '4xl', md: '5xl' }} fontWeight="bold" color="#0F0D35">
           Connect-Me
         </Text>
       </Box>
 
-      <Box borderRadius="md" borderWidth="1px" w="100%" p={4} bg="white">
+      <Box borderRadius="md" borderWidth="1px" w="100%" p={4} bg="#f5f5f5">
         <Tabs isFitted variant="soft-rounded" colorScheme="gray">
           <TabList>
             <Tab>Login</Tab>
