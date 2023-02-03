@@ -1,18 +1,21 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useToast } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
-import { getAvatarSrc, getChatName } from '../Utilities/utilities';
-import { useChat } from '../Context/ChatProvider';
-import { getChats } from '../Utilities/apiRequests';
+
+import { useChat } from '../../Context/ChatProvider';
 import ListWrapper, { ListItem } from './ListWrapper';
+import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
+import { getChats } from '../../Utilities/apiRequests';
 
 function ChatsList({ chats }) {
   const { user, setChats, fetch } = useChat();
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
 
   useEffect(() => {
     const fetchChats = async () => {
       try {
+        setLoading(true);
         const res = await getChats(user.token);
         setChats(res.data);
       } catch (err) {
@@ -24,6 +27,7 @@ function ChatsList({ chats }) {
           position: 'bottom',
         });
       }
+      setLoading(false);
     };
 
     fetchChats();
@@ -33,13 +37,13 @@ function ChatsList({ chats }) {
   return (
     <ListWrapper>
       {chats.map((chat) => (
-        <Chat key={chat._id} chat={chat} />
+        <Chat key={chat._id} chat={chat} loading={loading} />
       ))}
     </ListWrapper>
   );
 }
 
-function Chat({ chat }) {
+function Chat({ chat, loading }) {
   const { user, selectedChat, setSelectedChat } = useChat();
 
   const selectChat = () => {
@@ -53,6 +57,7 @@ function Chat({ chat }) {
       subText={chat.latestMessage.content}
       photo={getAvatarSrc(user.photo)}
       isSelected={(selectedChat && selectedChat._id === chat._id)}
+      loading={loading}
     />
   );
 }
@@ -60,17 +65,9 @@ function Chat({ chat }) {
 ChatsList.propTypes = {
   chats: PropTypes.arrayOf(
     PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      chatName: PropTypes.string.isRequired,
-      groupChat: PropTypes.bool.isRequired,
+      _id: PropTypes.string,
       latestMessage: PropTypes.shape({
         content: PropTypes.string,
-      }).isRequired,
-      groupAdmin: PropTypes.shape({
-        _id: PropTypes.string.isRequired,
-        name: PropTypes.string.isRequired,
-        email: PropTypes.string.isRequired,
-        photo: PropTypes.string.isRequired,
       }),
     }),
   ).isRequired,
@@ -78,19 +75,12 @@ ChatsList.propTypes = {
 
 Chat.propTypes = {
   chat: PropTypes.shape({
-    _id: PropTypes.string.isRequired,
-    chatName: PropTypes.string.isRequired,
-    groupChat: PropTypes.bool.isRequired,
+    _id: PropTypes.string,
     latestMessage: PropTypes.shape({
       content: PropTypes.string,
-    }).isRequired,
-    groupAdmin: PropTypes.shape({
-      _id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
-      email: PropTypes.string.isRequired,
-      photo: PropTypes.string.isRequired,
     }),
   }).isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 export default ChatsList;

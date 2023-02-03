@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   FormControl,
   Input,
@@ -9,7 +10,7 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
+
 import { useChat } from '../../Context/ChatProvider';
 import { loginUser } from '../../Utilities/apiRequests';
 
@@ -58,6 +59,7 @@ function Login() {
     <VStack spacing="1rem">
       <FormControl isRequired>
         <Input
+          borderColor="#204FA1"
           type="email"
           placeholder="Email"
           value={email}
@@ -68,13 +70,19 @@ function Login() {
         <InputGroup>
           <Input
             borderRight="none"
+            borderColor="#204FA1"
             type={show ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputRightAddon bg="#f5f5f5" borderLeft="none">
-            <Button bg="#f5f5f5" _hover={{ background: '#e0e0e0' }} onClick={toggleShow}>
+          <InputRightAddon bg="#fff" borderColor="#204FA1" borderLeft="none">
+            <Button
+              size="sm"
+              bg="#fff"
+              _hover={{ background: '#e0e0e0' }}
+              onClick={toggleShow}
+            >
               {show ? <ViewOffIcon /> : <ViewIcon />}
             </Button>
           </InputRightAddon>
@@ -83,7 +91,7 @@ function Login() {
       <Button
         w="100%"
         bg="#204FA1"
-        color="#f5f5f5"
+        color="#fff"
         onClick={submitForm}
         isLoading={loading}
         _hover={{ background: '#183B77' }}

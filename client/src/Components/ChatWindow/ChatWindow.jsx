@@ -1,15 +1,14 @@
-import { ChatIcon, InfoOutlineIcon } from '@chakra-ui/icons';
-import { Box, Divider, Input, Text, useToast } from '@chakra-ui/react';
+import { Box, Divider, Input, useToast } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
 import Lottie from 'react-lottie';
-import { useChat } from '../Context/ChatProvider';
-import { getChatName, splitMessages } from '../Utilities/utilities';
-import { getMessages, sendMessage } from '../Utilities/apiRequests';
-import GroupModal from './Modal/GroupModal';
-import ProfileModal from './Modal/ProfileModal';
+import { useChat } from '../../Context/ChatProvider';
+import { splitMessages } from '../../Utilities/utilities';
+import { getMessages, sendMessage } from '../../Utilities/apiRequests';
 import ChatWindowContent from './ChatWindowContent';
-import socket from '../Utilities/socket';
-import * as animationData from '../Animation/typing.json';
+import socket from '../../Utilities/socket';
+import * as animationData from '../../Animation/typing.json';
+import ChatWindowHeader from './ChatWindowHeader';
+import EmptyChatWindow from './EmptyChatWindow';
 
 const defaultOptions = {
   loop: true,
@@ -102,21 +101,52 @@ function ChatWindow() {
   };
 
   return (
-    <Box flex={3} bg="white" borderRadius="md" p="1rem" w="70%">
+    <Box
+      flex={3}
+      bg="white"
+      borderRadius="md"
+      borderTopLeftRadius={{
+        base: 'md',
+        md: 'none',
+      }}
+      borderBottomLeftRadius={{
+        base: 'md',
+        md: 'none',
+      }}
+      w="70%"
+      display={{ base: selectedChat ? 'flex' : 'none', md: 'flex' }}
+      justifyContent="center"
+    >
       {selectedChat ? (
         <Box
           display="flex"
           flexDirection="column"
           justifyContent="space-between"
           h="100%"
+          w="100%"
+          px="1rem"
+          py="0.5rem"
+          gap="0.5rem"
         >
           <ChatWindowHeader />
-          {messages.length > 0 &&
-            <ChatWindowContent messages={splitMessages(messages)} userId={user._id} />}
-          {typing ? <Box maxW="fit-content" maxH="10%"><Lottie options={defaultOptions} /></Box> : <div />}
+          <Divider borderColor="#204FA1" />
+          {messages.length > 0 && (
+            <ChatWindowContent
+              messages={splitMessages(messages)}
+              userId={user._id}
+            />
+          )}
+          {typing ? (
+            <Box maxW="fit-content" maxH="10%">
+              <Lottie options={defaultOptions} />
+            </Box>
+          ) : (
+            <div />
+          )}
           <Input
             py="0.25rem"
             px=".5rem"
+            borderColor="#204FA1"
             type="text"
             placeholder="Message..."
             value={message}
@@ -128,45 +158,6 @@ function ChatWindow() {
       ) : (
         <EmptyChatWindow />
       )}
-    </Box>
-  );
-}
-
-function ChatWindowHeader() {
-  const { user, selectedChat } = useChat();
-  return (
-    <Box display="flex" flexDirection="column" gap="1rem">
-      <Box display="flex" alignItems="center" justifyContent="space-between">
-        <Text>{getChatName(user._id, selectedChat)}</Text>
-        {
-          selectedChat.groupChat ?
-            <GroupModal chat={selectedChat}><InfoOutlineIcon /></GroupModal> : (
-              <ProfileModal user={selectedChat.users.filter((u) => u._id !== user._id)[0]}>
-                <InfoOutlineIcon />
-              </ProfileModal>
-            )
-        }
-      </Box>
-      <Divider colorScheme="gray" />
-    </Box>
-  );
-}
-
-function EmptyChatWindow() {
-  return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      justifyContent="center"
-      alignItems="center"
-      h="100%"
-      gap="0.5rem"
-    >
-      <ChatIcon fontSize={{ base: 'md', md: '5xl' }} />
-      <Text fontSize={{ base: 'md', md: 'xl' }}>Your Messages</Text>
-      <Text fontWeight="lighter">
-        Send private messages to a friend or group.
-      </Text>
     </Box>
   );
 }

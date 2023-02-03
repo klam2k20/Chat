@@ -2,7 +2,7 @@ import { Avatar, Box, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
-import { getAvatarSrc } from '../Utilities/utilities';
+import { getAvatarSrc } from '../../Utilities/utilities';
 
 function ChatWindowContent({ messages, userId }) {
   return (
@@ -52,7 +52,7 @@ function ChatWindowContent({ messages, userId }) {
                 borderRadius="xl"
                 py=".25rem"
                 px=".75rem"
-                bg={c.sender._id === userId ? '#204FA1' : '#e0e0e0'}
+                bg={c.sender._id === userId ? '#204FA1' : '#f5f5f5'}
                 color={c.sender._id === userId ? 'white' : 'black'}
               >
                 {c.content}

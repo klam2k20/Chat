@@ -1,5 +1,5 @@
-/* eslint-disable no-unused-vars */
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   FormControl,
@@ -8,10 +8,9 @@ import {
   InputRightAddon,
   VStack,
   useToast,
-  Box,
 } from '@chakra-ui/react';
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+
 import { useChat } from '../../Context/ChatProvider';
 import { createUser } from '../../Utilities/apiRequests';
 
@@ -20,6 +19,7 @@ function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  /* eslint-disable no-unused-vars */
   const [photo, setPhoto] = useState('');
   const [show, setShow] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -50,12 +50,14 @@ function Signup() {
     fetch('https://api.cloudinary.com/v1_1/dwrwytvae/image/upload', {
       method: 'POST',
       body: formData,
-    }).then((response) => response.json())
+    })
+      .then((response) => response.json())
       .then((data) => {
         if (data.secure_url) {
           setPhoto(data.secure_url.toString());
         }
-      }).catch((err) => {
+      })
+      .catch((err) => {
         customToast(`Error Uploading Photo ${err.message}`, 'error');
       });
     setLoading(false);
@@ -66,7 +68,7 @@ function Signup() {
     if (!name || !email || !password || !confirmPassword) {
       customToast('Please Enter All Fields', 'warning');
     } else if (password !== confirmPassword) {
-      customToast('Passwords Don\'t Match', 'warning');
+      customToast("Passwords Don't Match", 'warning');
     } else {
       try {
         const response = await createUser(name, email, password);
@@ -86,6 +88,7 @@ function Signup() {
     <VStack spacing="1rem">
       <FormControl isRequired>
         <Input
+          borderColor="#204FA1"
           type="text"
           placeholder="Name"
           value={name}
@@ -94,6 +97,7 @@ function Signup() {
       </FormControl>
       <FormControl isRequired>
         <Input
+          borderColor="#204FA1"
           type="email"
           placeholder="Email"
           value={email}
@@ -103,15 +107,17 @@ function Signup() {
       <FormControl isRequired>
         <InputGroup>
           <Input
+            borderColor="#204FA1"
             borderRight="none"
             type={show ? 'text' : 'password'}
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
-          <InputRightAddon bg="#f5f5f5" borderLeft="none">
+          <InputRightAddon borderColor="#204FA1" bg="#fff" borderLeft="none">
             <Button
-              bg="#f5f5f5"
+              size="sm"
+              bg="#fff"
               _hover={{ background: '#e0e0e0' }}
               onClick={toggleShow}
             >
@@ -123,15 +129,17 @@ function Signup() {
       <FormControl isRequired>
         <InputGroup>
           <Input
+            borderColor="#204FA1"
             borderRight="none"
             type={show ? 'text' : 'password'}
             placeholder="Confirm Password"
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
-          <InputRightAddon bg="#f5f5f5" borderLeft="none">
+          <InputRightAddon borderColor="#204FA1" bg="#fff" borderLeft="none">
             <Button
-              bg="#f5f5f5"
+              size="sm"
+              bg="#fff"
               _hover={{ background: '#e0e0e0' }}
               onClick={toggleShow}
             >
@@ -153,7 +161,7 @@ function Signup() {
       <Button
         w="100%"
         bg="#204FA1"
-        color="#f5f5f5"
+        color="#fff"
         onClick={submitForm}
         isLoading={loading}
         _hover={{ background: '#183B77' }}

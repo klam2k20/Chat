@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Button,
@@ -11,40 +12,52 @@ import {
   MenuDivider,
 } from '@chakra-ui/react';
 import { ChevronDownIcon } from '@chakra-ui/icons';
-import { useNavigate } from 'react-router-dom';
-import { useChat } from '../Context/ChatProvider';
-import { getAvatarSrc } from '../Utilities/utilities';
-import ProfileModal from './Modal/ProfileModal';
+import PropTypes from 'prop-types';
 
-function Header() {
+import { useChat } from '../../Context/ChatProvider';
+import ProfileModal from '../Modal/ProfileModal';
+import { getAvatarSrc } from '../../Utilities/utilities';
+
+function HeaderContainer() {
   const { user, setLoggedIn } = useChat();
   const navigate = useNavigate();
 
   const logout = () => {
-    localStorage.clear();
+    localStorage.removeItem('user-info');
     setLoggedIn(false);
     navigate('/');
   };
 
+  return <Header user={user} logout={logout} />;
+}
+
+function Header({ user, logout }) {
   return (
     <Box
       display="flex"
       justifyContent="space-between"
       alignItems="center"
-      bg="white"
+      bg="#fff"
       borderRadius="md"
       px="1rem"
-      h="10%"
+      h="12%"
     >
-      <Text fontSize={['xl', '2xl', '3xl', '4xl']}>Connect-Me</Text>
+      <Text
+        fontSize={{ base: '3xl', md: '4xl', xl: '5xl' }}
+        fontWeight="bold"
+      >
+        Connect-Me
+      </Text>
       <Menu>
         <MenuButton
           as={Button}
-          size={{ base: 'xs', md: 'sm' }}
+          bg="#fff"
+          _hover={{ background: '#e0e0e0' }}
+          size={{ base: 'sm', md: 'lg' }}
           rightIcon={<ChevronDownIcon />}
         >
           <Avatar
-            size={{ base: 'xs', md: 'sm' }}
+            size={{ base: 'sm', xl: 'md' }}
             cursor="pointer"
             name={user.name}
             src={getAvatarSrc(user.photo)}
@@ -62,4 +75,12 @@ function Header() {
   );
 }
 
-export default Header;
+Header.propTypes = {
+  user: PropTypes.shape({
+    name: PropTypes.string,
+    photo: PropTypes.string,
+  }).isRequired,
+  logout: PropTypes.func.isRequired,
+};
+
+export default HeaderContainer;

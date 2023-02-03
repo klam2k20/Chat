@@ -20,7 +20,7 @@ import { useEffect, useState } from 'react';
 import { useChat } from '../../Context/ChatProvider';
 import { addToGroup, removeFromGroup, renameGroupChat } from '../../Utilities/apiRequests';
 import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
-import SearchInput from '../SearchInput';
+import SearchInput from '../ChatBar/SearchInput';
 
 function GroupModal({ children, chat }) {
   const { isOpen, onOpen, onClose } = useDisclosure();

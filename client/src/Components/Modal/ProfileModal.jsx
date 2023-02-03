@@ -4,6 +4,7 @@ import {
   ModalOverlay, Text, useDisclosure,
 } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
+
 import { getAvatarSrc } from '../../Utilities/utilities';
 
 function ProfileModal({ children, user }) {
@@ -39,9 +40,8 @@ function ProfileModal({ children, user }) {
 ProfileModal.propTypes = {
   children: PropTypes.node.isRequired,
   user: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    email: PropTypes.string.isRequired,
-    photo: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    photo: PropTypes.string,
   }).isRequired,
 };
 

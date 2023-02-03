@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Container,
   Box,
@@ -9,10 +10,10 @@ import {
   Tab,
   TabPanel,
 } from '@chakra-ui/react';
-import { useNavigate } from 'react-router-dom';
+
+import { useChat } from '../Context/ChatProvider';
 import Login from '../Components/Auth/Login';
 import Signup from '../Components/Auth/Signup';
-import { useChat } from '../Context/ChatProvider';
 import { ReactComponent as Logo } from '../imgs/logo.svg';
 
 function Homepage() {
@@ -43,15 +44,15 @@ function Homepage() {
         borderRadius="md"
         borderWidth="1px"
         py="1rem"
-        bg="#f5f5f5"
+        bg="#fff"
       >
         <Logo />
-        <Text fontSize={{ base: '4xl', md: '5xl' }} fontWeight="bold" color="#0F0D35">
+        <Text fontSize={{ base: '4xl', md: '5xl' }} fontWeight="bold">
           Connect-Me
         </Text>
       </Box>
 
-      <Box borderRadius="md" borderWidth="1px" w="100%" p={4} bg="#f5f5f5">
+      <Box borderRadius="md" borderWidth="1px" w="100%" p={4} bg="#fff">
         <Tabs isFitted variant="soft-rounded" colorScheme="gray">
           <TabList>
             <Tab>Login</Tab>
