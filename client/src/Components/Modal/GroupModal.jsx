@@ -152,7 +152,7 @@ function GroupModal({ children, chat }) {
                 {users.length}
               </Text>
             </Box>
-            <Box display="flex" flexDirection="column" width="100%">
+            <Box display="flex" flexDirection="column" w="100%">
               {users.map((u) => (
                 <MemberItem
                   key={u._id}
