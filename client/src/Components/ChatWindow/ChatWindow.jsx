@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, useToast } from '@chakra-ui/react';
 import Lottie from 'react-lottie';
@@ -22,8 +22,6 @@ const defaultOptions = {
   },
 };
 
-let selectedChatDuplicate;
-
 function ChatWindow() {
   const { user, selectedChat, setFetch, setLoggedIn } = useChat();
   const [messages, setMessages] = useState([]);
@@ -32,18 +30,35 @@ function ChatWindow() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
-  selectedChatDuplicate = selectedChat;
+  const selectedChatRef = useRef();
+  /**
+   * When the socket listeners are added it happens during the
+   * initial rendering so useState variables are still undefined
+   * to use state variables across renderings use useRef
+   */
+  selectedChatRef.current = selectedChat;
   let timeout;
 
   useEffect(() => {
     socket.connect();
     setTimeout(() => socket.emit('setup', user._id), 1000);
     socket.on('typing', (chatId) => {
-      if (chatId === selectedChatDuplicate._id) { setTyping(true); }
+      if (chatId === selectedChatRef.current._id) {
+        setTyping(true);
+      }
     });
     socket.on('stop typing', () => setTyping(false));
+    socket.on('received message', (newMessage) => {
+      if (
+        selectedChatRef.current &&
+        selectedChatRef.current._id === newMessage.chat._id
+      ) {
+        setMessages((pre) => [...pre, newMessage]);
+      }
+      setFetch((pre) => !pre);
+    });
     return function cleanup() { socket.off(user._id); };
-  }, [user]);
+  }, []);
 
   useEffect(() => {
     const getChatMessages = async () => {
@@ -74,15 +89,6 @@ function ChatWindow() {
 
     getChatMessages();
   }, [selectedChat]);
-
-  useEffect(() => {
-    socket.on('received message', (newMessage) => {
-      if (selectedChatDuplicate && selectedChatDuplicate._id === newMessage.chat._id) {
-        setMessages((pre) => [...pre, newMessage]);
-      }
-      setFetch((pre) => !pre);
-    });
-  }, []);
 
   const sendChatMessage = async (e) => {
     if (message && e.key === 'Enter') {
