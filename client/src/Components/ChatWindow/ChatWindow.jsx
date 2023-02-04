@@ -22,6 +22,8 @@ const defaultOptions = {
   },
 };
 
+let selectedChatDuplicate;
+
 function ChatWindow() {
   const { user, selectedChat, setFetch, setLoggedIn } = useChat();
   const [messages, setMessages] = useState([]);
@@ -30,12 +32,15 @@ function ChatWindow() {
   const [loading, setLoading] = useState(false);
   const toast = useToast();
   const navigate = useNavigate();
+  selectedChatDuplicate = selectedChat;
   let timeout;
 
   useEffect(() => {
     socket.connect();
     setTimeout(() => socket.emit('setup', user._id), 1000);
-    socket.on('typing', () => setTyping(true));
+    socket.on('typing', (chatId) => {
+      if (chatId === selectedChatDuplicate._id) { setTyping(true); }
+    });
     socket.on('stop typing', () => setTyping(false));
     return function cleanup() { socket.off(user._id); };
   }, [user]);
@@ -72,7 +77,9 @@ function ChatWindow() {
 
   useEffect(() => {
     socket.on('received message', (newMessage) => {
-      setMessages((pre) => [...pre, newMessage]);
+      if (selectedChatDuplicate && selectedChatDuplicate._id === newMessage.chat._id) {
+        setMessages((pre) => [...pre, newMessage]);
+      }
       setFetch((pre) => !pre);
     });
   }, []);

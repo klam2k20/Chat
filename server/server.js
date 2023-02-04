@@ -47,13 +47,14 @@ dbConnection
           message.chat.users.forEach((u) => {
             if (u._id !== message.sender._id) {
               socket.to(u._id).emit('received message', message);
+              console.log(message);
             }
           });
         }
       });
 
       socket.on('typing', (chatId) => {
-        socket.broadcast.to(chatId).emit('typing');
+        socket.broadcast.to(chatId).emit('typing', chatId);
       });
 
       socket.on('stop typing', (chatId) => {
