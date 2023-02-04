@@ -10,7 +10,7 @@ Socket.io.
 
 The application was designed to be responsive for various device sizes as seen below: <br> <br>
 <img src="imgs/chat-sm.png" height=500> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-<img src="imgs/chat-md.png" height=500>
+<img src="imgs/chat-md.png" height=500 width=500>
 <img src="imgs/chat-lg.png" height=500 width=800>
 
 ## Getting Started
