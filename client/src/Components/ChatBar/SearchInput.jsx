@@ -72,7 +72,7 @@ function SearchInputDisplay({
   searchCaret,
 }) {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" w="100%">
+    <Box display="flex" flexDirection="column" alignItems="center" w="100%" gap="0.5rem">
       <Box
         display="flex"
         alignItems="center"
@@ -112,13 +112,11 @@ function SearchInputDisplay({
       </Box>
 
       <Box display="flex" flexDirection="column" w="full">
-        {searchResults.length > 0 && (
-          <UsersList
-            users={searchResults}
-            handleClick={addUser}
-            loading={loading}
-          />
-        )}
+        <UsersList
+          users={searchResults}
+          handleClick={addUser}
+          loading={loading}
+        />
       </Box>
     </Box>
   );

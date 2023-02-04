@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import {
   Box,
-  InputGroup,
-  Input,
   Text,
-  InputLeftAddon,
   Divider,
 } from '@chakra-ui/react';
 import { SearchIcon, EditIcon } from '@chakra-ui/icons';
@@ -15,7 +12,7 @@ import ChatsList from '../List/ChatsList';
 import ChatModalContainer from '../Modal/ChatModal';
 import { getChatName } from '../../Utilities/utilities';
 
-function ChatBarContainer() {
+function ChatBar() {
   const [search, setSearch] = useState('');
   const [result, setResult] = useState([]);
   const { user, selectedChat, chats } = useChat();
@@ -37,7 +34,7 @@ function ChatBarContainer() {
   };
 
   return (
-    <ChatBar
+    <ChatBarDisplay
       search={search}
       handleSearch={handleSearch}
       result={result}
@@ -47,7 +44,7 @@ function ChatBarContainer() {
   );
 }
 
-function ChatBar({ search, handleSearch, result, chats, selectedChat }) {
+function ChatBarDisplay({ search, handleSearch, result, chats, selectedChat }) {
   return (
     <Box
       flex={1}
@@ -72,7 +69,7 @@ function ChatBar({ search, handleSearch, result, chats, selectedChat }) {
         base: '0',
         md: '1px',
       }}
-      borderRightColor="#183B77"
+      borderRightColor="#204FA1"
     >
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Text fontSize="xl" fontWeight="bold">
@@ -82,21 +79,26 @@ function ChatBar({ search, handleSearch, result, chats, selectedChat }) {
           <EditIcon fontSize="lg" />
         </ChatModalContainer>
       </Box>
-      <Divider borderColor="#183B77" />
-      <Box>
-        <InputGroup>
-          <InputLeftAddon borderColor="#204FA1" bg="#fff" borderRight="none">
-            <SearchIcon fontSize="sm" />
-          </InputLeftAddon>
-          <Input
-            borderColor="#204FA1"
-            borderLeft="none"
-            type="text"
-            placeholder="Search"
-            value={search}
-            onChange={(e) => handleSearch(e)}
-          />
-        </InputGroup>
+      <Divider borderColor="#204FA1" />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        gap="0.5rem"
+        border="1px"
+        py="0.25rem"
+        px="0.5rem"
+        borderColor="#204FA1"
+        borderRadius="md"
+      >
+        <SearchIcon fontSize="sm" />
+        <input
+          className="input"
+          type="text"
+          placeholder="Search"
+          value={search}
+          onChange={(e) => handleSearch(e)}
+        />
       </Box>
 
       {search ? (
@@ -108,11 +110,11 @@ function ChatBar({ search, handleSearch, result, chats, selectedChat }) {
   );
 }
 
-ChatBar.defaultProps = {
+ChatBarDisplay.defaultProps = {
   selectedChat: undefined,
 };
 
-ChatBar.propTypes = {
+ChatBarDisplay.propTypes = {
   search: PropTypes.string.isRequired,
   handleSearch: PropTypes.func.isRequired,
   result: PropTypes.arrayOf(
@@ -132,4 +134,5 @@ ChatBar.propTypes = {
     chatName: PropTypes.string,
   }),
 };
-export default ChatBarContainer;
+
+export default ChatBar;

@@ -1,8 +1,8 @@
 import React, {
   useState, createContext, useEffect, useContext,
 } from 'react';
-import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 const ChatContext = createContext();
 

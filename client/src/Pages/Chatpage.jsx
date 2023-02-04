@@ -3,7 +3,7 @@ import { Box } from '@chakra-ui/react';
 import { useChat } from '../Context/ChatProvider';
 import ChatBarContainer from '../Components/ChatBar/ChatBar';
 import ChatWindow from '../Components/ChatWindow/ChatWindow';
-import HeaderContainer from '../Components/ChatBar/Header';
+import Header from '../Components/ChatBar/Header';
 
 function Chatpage() {
   const { user } = useChat();
@@ -18,7 +18,7 @@ function Chatpage() {
     >
       {user && (
         <>
-          <HeaderContainer />
+          <Header />
           <Box display="flex" h="88%">
             <ChatBarContainer />
             <ChatWindow />

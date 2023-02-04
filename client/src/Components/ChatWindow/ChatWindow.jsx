@@ -1,14 +1,16 @@
-import { Box, Divider, Input, useToast } from '@chakra-ui/react';
 import React, { useState, useEffect } from 'react';
+import { Box, useToast } from '@chakra-ui/react';
 import Lottie from 'react-lottie';
+import PropTypes from 'prop-types';
+
 import { useChat } from '../../Context/ChatProvider';
-import { splitMessages } from '../../Utilities/utilities';
-import { getMessages, sendMessage } from '../../Utilities/apiRequests';
-import ChatWindowContent from './ChatWindowContent';
-import socket from '../../Utilities/socket';
-import * as animationData from '../../Animation/typing.json';
+import MessageList from '../List/MessageList';
 import ChatWindowHeader from './ChatWindowHeader';
 import EmptyChatWindow from './EmptyChatWindow';
+import * as animationData from '../../Animation/typing.json';
+import { splitMessages } from '../../Utilities/utilities';
+import { getMessages, sendMessage } from '../../Utilities/apiRequests';
+import socket from '../../Utilities/socket';
 
 const defaultOptions = {
   loop: true,
@@ -24,6 +26,7 @@ function ChatWindow() {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [typing, setTyping] = useState(false);
+  const [loading, setLoading] = useState(false);
   const toast = useToast();
   let timeout;
 
@@ -39,6 +42,7 @@ function ChatWindow() {
     const getChatMessages = async () => {
       if (selectedChat) {
         try {
+          setLoading(true);
           const { data } = await getMessages(user.token, selectedChat._id);
           socket.emit('join chat', selectedChat._id);
           setMessages(data);
@@ -51,11 +55,11 @@ function ChatWindow() {
             position: 'bottom',
           });
         }
+        setLoading(false);
       }
     };
 
     getChatMessages();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChat]);
 
   useEffect(() => {
@@ -101,6 +105,21 @@ function ChatWindow() {
   };
 
   return (
+    <ChatWindowDisplay
+      message={message}
+      messages={messages}
+      loading={loading}
+      typing={typing}
+      handleTyping={handleTyping}
+      sendChatMessage={sendChatMessage}
+    />
+  );
+}
+
+function ChatWindowDisplay({ message, messages, loading, typing, handleTyping, sendChatMessage }) {
+  const { user, selectedChat } = useChat();
+
+  return (
     <Box
       flex={3}
       bg="white"
@@ -116,6 +135,7 @@ function ChatWindow() {
       w="70%"
       display={{ base: selectedChat ? 'flex' : 'none', md: 'flex' }}
       justifyContent="center"
+      gap="0.5rem"
     >
       {selectedChat ? (
         <Box
@@ -129,13 +149,11 @@ function ChatWindow() {
           gap="0.5rem"
         >
           <ChatWindowHeader />
-          <Divider borderColor="#204FA1" />
-          {messages.length > 0 && (
-            <ChatWindowContent
-              messages={splitMessages(messages)}
-              userId={user._id}
-            />
-          )}
+          <MessageList
+            messages={splitMessages(messages)}
+            userId={user._id}
+            loading={loading}
+          />
           {typing ? (
             <Box maxW="fit-content" maxH="10%">
               <Lottie options={defaultOptions} />
@@ -143,17 +161,23 @@ function ChatWindow() {
           ) : (
             <div />
           )}
-          <Input
+          <Box
             py="0.25rem"
             px=".5rem"
+            border="1px"
+            borderRadius="md"
             borderColor="#204FA1"
-            type="text"
-            placeholder="Message..."
-            value={message}
-            onChange={(e) => handleTyping(e)}
-            onKeyDown={(e) => sendChatMessage(e)}
-            onBlur={() => socket.emit('stop typing', selectedChat._id)}
-          />
+          >
+            <input
+              className="input"
+              type="text"
+              placeholder="Message..."
+              value={message}
+              onChange={(e) => handleTyping(e)}
+              onKeyDown={(e) => sendChatMessage(e)}
+              onBlur={() => socket.emit('stop typing', selectedChat._id)}
+            />
+          </Box>
         </Box>
       ) : (
         <EmptyChatWindow />
@@ -161,5 +185,18 @@ function ChatWindow() {
     </Box>
   );
 }
+
+ChatWindowDisplay.propTypes = {
+  message: PropTypes.string.isRequired,
+  messages: PropTypes.arrayOf(
+    PropTypes.shape({
+      content: PropTypes.string,
+    }),
+  ).isRequired,
+  loading: PropTypes.bool.isRequired,
+  typing: PropTypes.bool.isRequired,
+  handleTyping: PropTypes.func.isRequired,
+  sendChatMessage: PropTypes.func.isRequired,
+};
 
 export default ChatWindow;

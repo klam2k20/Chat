@@ -1,19 +1,20 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { getAvatarSrc } from '../../Utilities/utilities';
+
 import ListWrapper, { ListItem } from './ListWrapper';
+import { getAvatarSrc } from '../../Utilities/utilities';
 
 function UsersList({ users, handleClick, loading }) {
   return (
-    <ListWrapper>
+    <ListWrapper loading={loading}>
       {users.map((user) => (
-        <User key={user._id} user={user} handleClick={handleClick} loading={loading} />
+        <User key={user._id} user={user} handleClick={handleClick} />
       ))}
     </ListWrapper>
   );
 }
 
-function User({ user, handleClick, loading }) {
+function User({ user, handleClick }) {
   return (
     <ListItem
       handleClick={() => handleClick(user)}
@@ -21,7 +22,6 @@ function User({ user, handleClick, loading }) {
       subText={user.email}
       photo={getAvatarSrc(user.photo)}
       isSelected={false}
-      loading={loading}
     />
   );
 }
@@ -47,7 +47,6 @@ User.propTypes = {
     photo: PropTypes.string.isRequired,
   }).isRequired,
   handleClick: PropTypes.func.isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default UsersList;

@@ -15,18 +15,20 @@ const getChatName = (userId, chat) => {
 const splitMessages = (messages) => {
   const res = [];
   let chunk = [];
-  const lastIndex = messages.length - 1;
-  messages.forEach((m, i) => {
-    if (m._id !== messages[lastIndex]._id) {
-      chunk.push(m);
-      if (m.sender._id !== messages[i + 1].sender._id) {
-        res.push(chunk);
-        chunk = [];
+  if (messages.length) {
+    const lastIndex = messages.length - 1;
+    messages.forEach((m, i) => {
+      if (m._id !== messages[lastIndex]._id) {
+        chunk.push(m);
+        if (m.sender._id !== messages[i + 1].sender._id) {
+          res.push(chunk);
+          chunk = [];
+        }
       }
-    }
-  });
-  chunk.push(messages[lastIndex]);
-  res.push(chunk);
+    });
+    chunk.push(messages[lastIndex]);
+    res.push(chunk);
+  }
   return res;
 };
 

@@ -1,4 +1,4 @@
-import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
+import { useEffect, useState } from 'react';
 import {
   Avatar,
   AvatarGroup,
@@ -15,12 +15,17 @@ import {
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
+import { AddIcon, DeleteIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
-import { useEffect, useState } from 'react';
+
 import { useChat } from '../../Context/ChatProvider';
-import { addToGroup, removeFromGroup, renameGroupChat } from '../../Utilities/apiRequests';
-import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 import SearchInput from '../ChatBar/SearchInput';
+import {
+  addToGroup,
+  removeFromGroup,
+  renameGroupChat,
+} from '../../Utilities/apiRequests';
+import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 
 function GroupModal({ children, chat }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -37,7 +42,11 @@ function GroupModal({ children, chat }) {
 
   const removeUserFromGroup = async (removeUserId) => {
     try {
-      const { data } = await removeFromGroup(user.token, chat._id, removeUserId);
+      const { data } = await removeFromGroup(
+        user.token,
+        chat._id,
+        removeUserId,
+      );
       setSelectedChat(data);
       setFetch(!fetch);
     } catch (err) {
@@ -63,7 +72,9 @@ function GroupModal({ children, chat }) {
       setSelectedUsers([]);
     } catch (err) {
       toast({
-        title: `Error Adding ${selectedUsers.length === 1 ? 'User' : 'Users'} To Group`,
+        title: `Error Adding ${
+          selectedUsers.length === 1 ? 'User' : 'Users'
+        } To Group`,
         status: 'error',
         duration: 5000,
         isClosable: true,
@@ -168,7 +179,13 @@ function GroupModal({ children, chat }) {
             </Box>
           </ModalBody>
           <ModalFooter>
-            <Button colorScheme="red" onClick={() => { removeUserFromGroup(user._id); onClose(); }}>
+            <Button
+              colorScheme="red"
+              onClick={() => {
+                removeUserFromGroup(user._id);
+                onClose();
+              }}
+            >
               Leave Group
             </Button>
           </ModalFooter>

@@ -22,6 +22,11 @@
   background: #e0e0e0;
 }
 
-.searchInput:focus {
+.input {
+  width: 100%;
+}
+
+.searchInput:focus,
+.input:focus {
   outline: none;
 }

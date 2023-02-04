@@ -15,10 +15,7 @@ import PropTypes from 'prop-types';
 
 import { useChat } from '../../Context/ChatProvider';
 import SearchInput from '../ChatBar/SearchInput';
-import {
-  createOrFetchChat,
-  createOrFetchGroupChat,
-} from '../../Utilities/apiRequests';
+import { createOrFetchChat, createOrFetchGroupChat } from '../../Utilities/apiRequests';
 
 function ChatModalContainer({ children }) {
   const [search, setSearch] = useState('');

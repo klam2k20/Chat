@@ -16,9 +16,10 @@ import PropTypes from 'prop-types';
 
 import { useChat } from '../../Context/ChatProvider';
 import ProfileModal from '../Modal/ProfileModal';
+import { ReactComponent as Logo } from '../../imgs/logo.svg';
 import { getAvatarSrc } from '../../Utilities/utilities';
 
-function HeaderContainer() {
+function Header() {
   const { user, setLoggedIn } = useChat();
   const navigate = useNavigate();
 
@@ -28,10 +29,10 @@ function HeaderContainer() {
     navigate('/');
   };
 
-  return <Header user={user} logout={logout} />;
+  return <HeaderDisplay user={user} logout={logout} />;
 }
 
-function Header({ user, logout }) {
+function HeaderDisplay({ user, logout }) {
   return (
     <Box
       display="flex"
@@ -42,12 +43,15 @@ function Header({ user, logout }) {
       px="1rem"
       h="12%"
     >
-      <Text
-        fontSize={{ base: '3xl', md: '4xl', xl: '5xl' }}
-        fontWeight="bold"
-      >
-        Connect-Me
-      </Text>
+      <Box display="flex" alignItems="center">
+        <Logo />
+        <Text
+          fontSize={{ base: '2xl', md: '4xl', xl: '5xl' }}
+          fontWeight="bold"
+        >
+          Connect-Me
+        </Text>
+      </Box>
       <Menu>
         <MenuButton
           as={Button}
@@ -75,7 +79,7 @@ function Header({ user, logout }) {
   );
 }
 
-Header.propTypes = {
+HeaderDisplay.propTypes = {
   user: PropTypes.shape({
     name: PropTypes.string,
     photo: PropTypes.string,
@@ -83,4 +87,4 @@ Header.propTypes = {
   logout: PropTypes.func.isRequired,
 };
 
-export default HeaderContainer;
+export default Header;

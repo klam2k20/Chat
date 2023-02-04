@@ -1,56 +1,59 @@
 import React from 'react';
-import { Avatar, Box, Button, Skeleton, Text } from '@chakra-ui/react';
+import { Avatar, Box, Button, Text } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
-function ListWrapper({ children }) {
+import LoadingList from './LoadingList';
+
+function ListWrapper({ children, loading }) {
   return (
-    <Box
-      display="flex"
-      flexDirection="column"
-      w="100%"
-      overflowY="scroll"
-      sx={{
-        '::-webkit-scrollbar': {
-          display: 'none',
-        },
-      }}
-    >
-      {children}
-    </Box>
+    loading ? <LoadingList /> : (
+      <Box
+        display="flex"
+        flexDirection="column"
+        w="100%"
+        overflowY="scroll"
+        sx={{
+          '::-webkit-scrollbar': {
+            display: 'none',
+          },
+        }}
+      >
+        {children}
+      </Box>
+    )
   );
 }
 
-function ListItem({ handleClick, text, subText, photo, isSelected, loading }) {
+function ListItem({ handleClick, text, subText, photo, isSelected }) {
   return (
-    <Skeleton isLoaded={!loading} fadeDuration={1}>
-      <Button
-        display="flex"
-        gap="0.5rem"
-        justifyContent="justify-start"
-        alignItems="center"
-        py="2rem"
-        px="1rem"
-        w="100%"
-        onClick={handleClick}
-        borderColor="#204FA1"
-        bg={isSelected ? '#e0e0e0' : '#fff'}
-        _hover={{ background: '#e0e0e0' }}
-      >
-        <Avatar size={{ base: 'xs', md: 'sm' }} name={text} src={photo} />
-        <Box display="flex" flexDirection="column" alignItems="start" maxW="90%">
-          <Text fontSize="lg" maxW="100%" isTruncated>
-            {text}
-          </Text>
-          <Text fontSize="lg" fontWeight="lighter" maxW="100%" isTruncated>
-            {subText}
-          </Text>
-        </Box>
-      </Button>
-    </Skeleton>
+    <Button
+      display="flex"
+      gap="0.5rem"
+      justifyContent="justify-start"
+      alignItems="center"
+      py="2rem"
+      px="1rem"
+      w="100%"
+      onClick={handleClick}
+      borderColor="#204FA1"
+      bg={isSelected ? '#e0e0e0' : '#fff'}
+      _hover={{ background: '#e0e0e0' }}
+    >
+      <Avatar size={{ base: 'xs', md: 'sm' }} name={text} src={photo} />
+      <Box display="flex" flexDirection="column" alignItems="start" maxW="90%">
+        <Text fontSize="lg" maxW="100%" isTruncated>
+          {text}
+        </Text>
+        <Text fontSize="lg" fontWeight="lighter" maxW="100%" isTruncated>
+          {subText}
+        </Text>
+      </Box>
+    </Button>
   );
 }
 ListWrapper.propTypes = {
   children: PropTypes.node.isRequired,
+  loading: PropTypes.bool.isRequired,
 };
 
 ListItem.defaultProps = {
@@ -63,7 +66,6 @@ ListItem.propTypes = {
   subText: PropTypes.string.isRequired,
   photo: PropTypes.string.isRequired,
   isSelected: PropTypes.bool,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default ListWrapper;

@@ -31,19 +31,18 @@ function ChatsList({ chats }) {
     };
 
     fetchChats();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [fetch]);
 
   return (
-    <ListWrapper>
+    <ListWrapper loading={loading}>
       {chats.map((chat) => (
-        <Chat key={chat._id} chat={chat} loading={loading} />
+        <Chat key={chat._id} chat={chat} />
       ))}
     </ListWrapper>
   );
 }
 
-function Chat({ chat, loading }) {
+function Chat({ chat }) {
   const { user, selectedChat, setSelectedChat } = useChat();
 
   const selectChat = () => {
@@ -57,7 +56,6 @@ function Chat({ chat, loading }) {
       subText={chat.latestMessage.content}
       photo={getAvatarSrc(user.photo)}
       isSelected={(selectedChat && selectedChat._id === chat._id)}
-      loading={loading}
     />
   );
 }
@@ -80,7 +78,6 @@ Chat.propTypes = {
       content: PropTypes.string,
     }),
   }).isRequired,
-  loading: PropTypes.bool.isRequired,
 };
 
 export default ChatsList;
