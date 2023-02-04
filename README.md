@@ -6,7 +6,8 @@
 
 This is a responsive Chat App created with ReactJS, MongoDB, Express and NodeJS.
 The app supports real-time messaging for individual and group chats, due to
-Socket.io.
+Socket.io. In group situations, users can add and remove members from a group,
+as well as, rename the chat.
 
 The application was designed to be responsive for various device sizes as seen below: <br> <br>
 <img src="imgs/chat-sm.png" height=500> &nbsp;

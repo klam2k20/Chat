@@ -41,7 +41,7 @@ function ChatModalContainer({ children }) {
             'group',
             JSON.stringify(selectedUsers.map((u) => u._id)),
           );
-      setSelectedChat(data);
+      await setSelectedChat(data);
       setSelectedUsers([]);
       setFetch(!fetch);
       onClose();
