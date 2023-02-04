@@ -47,7 +47,6 @@ dbConnection
           message.chat.users.forEach((u) => {
             if (u._id !== message.sender._id) {
               socket.to(u._id).emit('received message', message);
-              console.log(message);
             }
           });
         }
