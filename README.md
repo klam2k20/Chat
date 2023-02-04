@@ -9,9 +9,9 @@ The app supports real-time messaging for individual and group chats, due to
 Socket.io.
 
 The application was designed to be responsive for various device sizes as seen below: <br> <br>
-<img src="imgs/chat-sm.png" height=500 width=300> &nbsp;
-<img src="imgs/chat-md.png" height=500 width=600>
-<img src="imgs/chat-lg.png" height=500 width=800>
+<img src="imgs/chat-sm.png" height=500>
+<img src="imgs/chat-md.png" height=500>
+<img src="imgs/chat-lg.png" height=500>
 
 ## Getting Started
 
