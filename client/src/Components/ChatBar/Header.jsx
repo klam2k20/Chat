@@ -20,12 +20,15 @@ import { ReactComponent as Logo } from '../../imgs/logo.svg';
 import { getAvatarSrc } from '../../Utilities/utilities';
 
 function Header() {
-  const { user, setLoggedIn } = useChat();
+  const { user, setLoggedIn, setUser, setSelectedChat, setChats } = useChat();
   const navigate = useNavigate();
 
   const logout = () => {
     localStorage.removeItem('user-info');
     setLoggedIn(false);
+    setUser();
+    setSelectedChat();
+    setChats([]);
     navigate('/');
   };
 

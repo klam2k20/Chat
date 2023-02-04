@@ -22,7 +22,7 @@ function ChatModalContainer({ children }) {
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [active, setActive] = useState(false);
-  const { user, setSelectedChat, fetch, setFetch, setLoggedIn } = useChat();
+  const { user, setUser, setSelectedChat, setChats, fetch, setFetch, setLoggedIn } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const navigate = useNavigate();
   const toast = useToast();
@@ -49,6 +49,9 @@ function ChatModalContainer({ children }) {
       if (err.response.status === 401) {
         localStorage.removeItem('user-info');
         setLoggedIn(false);
+        setUser();
+        setSelectedChat();
+        setChats([]);
         navigate('/');
       } else {
         toast({

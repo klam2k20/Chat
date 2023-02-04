@@ -33,6 +33,7 @@ export default function ChatProvider({ children }) {
     const userInfo = JSON.parse(localStorage.getItem('user-info'));
     if (userInfo) {
       setUser(userInfo);
+      setLoggedIn(true);
       setFetch((f) => !f);
     } else {
       navigate('/');

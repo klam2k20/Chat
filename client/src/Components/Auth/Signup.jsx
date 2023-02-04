@@ -71,7 +71,7 @@ function Signup() {
       customToast("Passwords Don't Match", 'warning');
     } else {
       try {
-        const response = await createUser(name, email, password);
+        const response = await createUser(name, email, password, photo);
         customToast(`${name} Has Been Successfully Registered`, 'success');
         localStorage.setItem('user-info', JSON.stringify(response.data));
         setLoading(false);

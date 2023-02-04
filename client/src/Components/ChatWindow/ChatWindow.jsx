@@ -23,7 +23,8 @@ const defaultOptions = {
 };
 
 function ChatWindow() {
-  const { user, selectedChat, setFetch, setLoggedIn } = useChat();
+  const { user, setUser, selectedChat, setSelectedChat,
+    setChats, setFetch, setLoggedIn } = useChat();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [typing, setTyping] = useState(false);
@@ -72,6 +73,9 @@ function ChatWindow() {
           if (err.response.status === 401) {
             localStorage.removeItem('user-info');
             setLoggedIn(false);
+            setUser();
+            setSelectedChat();
+            setChats([]);
             navigate('/');
           } else {
             toast({
@@ -103,6 +107,9 @@ function ChatWindow() {
         if (err.response.status === 401) {
           localStorage.removeItem('user-info');
           setLoggedIn(false);
+          setUser();
+          setSelectedChat();
+          setChats([]);
           navigate('/');
         } else {
           toast({

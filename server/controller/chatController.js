@@ -59,7 +59,7 @@ const getUserChats = async (req, res) => {
     .sort({ updatedAt: -1 });
   await User.populate(chats, {
     path: 'latestMessage.sender',
-    select: '_id name pic email',
+    select: '_id name pic email photo',
   });
   return res.status(200).json(chats);
 };

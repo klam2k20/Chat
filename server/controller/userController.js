@@ -26,7 +26,7 @@ const registerUser = async (req, res) => {
   await user.save((err, result) => {
     if (!err) {
       return res.status(201).json({
-        __id: result._id,
+        _id: result._id,
         name: result.name,
         email: result.email,
         photo: result.photo,

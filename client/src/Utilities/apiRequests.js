@@ -11,11 +11,11 @@ const loginUser = (email, password) => {
   );
 };
 
-const createUser = (name, email, password) => {
+const createUser = (name, email, password, photo) => {
   const headers = { 'context-type': 'application/json' };
   return axios.post(
     baseUrl.concat('/api/user'),
-    { name, email, password },
+    { name, email, password, photo },
     headers,
   );
 };

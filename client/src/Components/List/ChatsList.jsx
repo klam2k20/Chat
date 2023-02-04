@@ -9,7 +9,7 @@ import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 import { getChats } from '../../Utilities/apiRequests';
 
 function ChatsList({ chats }) {
-  const { user, setChats, fetch, setLoggedIn } = useChat();
+  const { user, setUser, setSelectedChat, setChats, fetch, setLoggedIn } = useChat();
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const toast = useToast();
@@ -24,6 +24,9 @@ function ChatsList({ chats }) {
         if (err.response.status === 401) {
           localStorage.removeItem('user-info');
           setLoggedIn(false);
+          setUser();
+          setSelectedChat();
+          setChats([]);
           navigate('/');
         } else {
           toast({
@@ -62,8 +65,8 @@ function Chat({ chat }) {
       handleClick={selectChat}
       text={getChatName(user._id, chat)}
       subText={chat.latestMessage.content}
-      photo={getAvatarSrc(user.photo)}
-      isSelected={(selectedChat && selectedChat._id === chat._id)}
+      photo={getAvatarSrc(chat.latestMessage.sender.photo)}
+      isSelected={selectedChat && selectedChat._id === chat._id}
     />
   );
 }
@@ -84,6 +87,9 @@ Chat.propTypes = {
     _id: PropTypes.string,
     latestMessage: PropTypes.shape({
       content: PropTypes.string,
+      sender: PropTypes.shape({
+        photo: PropTypes.string,
+      }),
     }),
   }).isRequired,
 };

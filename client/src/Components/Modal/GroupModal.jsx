@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Avatar,
   AvatarGroup,
@@ -29,12 +30,13 @@ import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 
 function GroupModal({ children, chat }) {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { user, setSelectedChat, fetch, setFetch } = useChat();
+  const { user, setUser, setSelectedChat, setChats, fetch, setFetch, setLoggedIn } = useChat();
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [chatName, setChatName] = useState(getChatName(user._id, chat));
   const users = chat.users.filter((u) => u._id !== user._id);
   const toast = useToast();
+  const navigate = useNavigate();
 
   useEffect(() => {
     setChatName(getChatName(user._id, chat));
@@ -50,13 +52,22 @@ function GroupModal({ children, chat }) {
       setSelectedChat(data);
       setFetch(!fetch);
     } catch (err) {
-      toast({
-        title: 'Error Removing User from Group',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+      if (err.response.status === 401) {
+        localStorage.removeItem('user-info');
+        setLoggedIn(false);
+        setUser();
+        setSelectedChat();
+        setChats([]);
+        navigate('/');
+      } else {
+        toast({
+          title: 'Error Removing User from Group',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
     }
   };
 
@@ -71,15 +82,23 @@ function GroupModal({ children, chat }) {
       }
       setSelectedUsers([]);
     } catch (err) {
-      toast({
-        title: `Error Adding ${
-          selectedUsers.length === 1 ? 'User' : 'Users'
-        } To Group`,
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+      if (err.response.status === 401) {
+        localStorage.removeItem('user-info');
+        setLoggedIn(false);
+        setUser();
+        setSelectedChat();
+        setChats([]);
+        navigate('/');
+      } else {
+        toast({
+          title: `Error Adding ${selectedUsers.length === 1 ? 'User' : 'Users'
+          } To Group`,
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
     }
   };
 
@@ -89,13 +108,22 @@ function GroupModal({ children, chat }) {
       setSelectedChat(data);
       setFetch(!fetch);
     } catch (err) {
-      toast({
-        title: 'Error Renaming Chat',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+      if (err.response.status === 401) {
+        localStorage.removeItem('user-info');
+        setLoggedIn(false);
+        setUser();
+        setSelectedChat();
+        setChats([]);
+        navigate('/');
+      } else {
+        toast({
+          title: 'Error Renaming Chat',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
     }
   };
 
