@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Badge, Box, Text, useToast } from '@chakra-ui/react';
 import { CloseIcon } from '@chakra-ui/icons';
 import PropTypes from 'prop-types';
@@ -10,9 +11,10 @@ import { getUsers } from '../../Utilities/apiRequests';
 function SearchInput({ search, setSearch, selectedUsers, setSelectedUsers }) {
   const [searchResults, setSearchResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { user } = useChat();
+  const { user, setLoggedIn } = useChat();
   const searchCaret = useRef();
   const toast = useToast();
+  const navigate = useNavigate();
 
   const handleSearch = async (e) => {
     setLoading(true);
@@ -24,13 +26,19 @@ function SearchInput({ search, setSearch, selectedUsers, setSelectedUsers }) {
         data = data.filter((u) => !selectedUsers.some((rm) => rm._id === u._id));
         setSearchResults(data.slice(0, 8));
       } catch (err) {
-        toast({
-          title: 'Invalid Search',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
+        if (err.response.status === 401) {
+          localStorage.removeItem('user-info');
+          setLoggedIn(false);
+          navigate('/');
+        } else {
+          toast({
+            title: 'Invalid Search',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom',
+          });
+        }
       }
     } else {
       setSearchResults([]);

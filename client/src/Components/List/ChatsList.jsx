@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useToast } from '@chakra-ui/react';
 import PropTypes from 'prop-types';
 
@@ -8,8 +9,9 @@ import { getAvatarSrc, getChatName } from '../../Utilities/utilities';
 import { getChats } from '../../Utilities/apiRequests';
 
 function ChatsList({ chats }) {
-  const { user, setChats, fetch } = useChat();
+  const { user, setChats, fetch, setLoggedIn } = useChat();
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
@@ -19,13 +21,19 @@ function ChatsList({ chats }) {
         const res = await getChats(user.token);
         setChats(res.data);
       } catch (err) {
-        toast({
-          title: 'Error While Fetching Chats',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
+        if (err.response.status === 401) {
+          localStorage.removeItem('user-info');
+          setLoggedIn(false);
+          navigate('/');
+        } else {
+          toast({
+            title: 'Error While Fetching Chats',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom',
+          });
+        }
       }
       setLoading(false);
     };

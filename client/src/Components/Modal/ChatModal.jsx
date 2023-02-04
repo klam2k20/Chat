@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Button,
   Modal,
@@ -21,8 +22,9 @@ function ChatModalContainer({ children }) {
   const [search, setSearch] = useState('');
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [active, setActive] = useState(false);
-  const { user, setSelectedChat, fetch, setFetch } = useChat();
+  const { user, setSelectedChat, fetch, setFetch, setLoggedIn } = useChat();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const navigate = useNavigate();
   const toast = useToast();
 
   useEffect(() => {
@@ -43,14 +45,20 @@ function ChatModalContainer({ children }) {
       setSelectedUsers([]);
       setFetch(!fetch);
       onClose();
-    } catch (e) {
-      toast({
-        title: 'Error Creating Chat!',
-        status: 'error',
-        duration: 5000,
-        isClosable: true,
-        position: 'bottom',
-      });
+    } catch (err) {
+      if (err.response.status === 401) {
+        localStorage.removeItem('user-info');
+        setLoggedIn(false);
+        navigate('/');
+      } else {
+        toast({
+          title: 'Error Creating Chat!',
+          status: 'error',
+          duration: 5000,
+          isClosable: true,
+          position: 'bottom',
+        });
+      }
     }
   };
 

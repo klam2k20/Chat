@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Box, useToast } from '@chakra-ui/react';
 import Lottie from 'react-lottie';
 import PropTypes from 'prop-types';
@@ -22,12 +23,13 @@ const defaultOptions = {
 };
 
 function ChatWindow() {
-  const { user, selectedChat, setFetch } = useChat();
+  const { user, selectedChat, setFetch, setLoggedIn } = useChat();
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState('');
   const [typing, setTyping] = useState(false);
   const [loading, setLoading] = useState(false);
   const toast = useToast();
+  const navigate = useNavigate();
   let timeout;
 
   useEffect(() => {
@@ -47,13 +49,19 @@ function ChatWindow() {
           socket.emit('join chat', selectedChat._id);
           setMessages(data);
         } catch (err) {
-          toast({
-            title: 'Error While Fetching Chat Messages',
-            status: 'error',
-            duration: 5000,
-            isClosable: true,
-            position: 'bottom',
-          });
+          if (err.response.status === 401) {
+            localStorage.removeItem('user-info');
+            setLoggedIn(false);
+            navigate('/');
+          } else {
+            toast({
+              title: 'Error While Fetching Chat Messages',
+              status: 'error',
+              duration: 5000,
+              isClosable: true,
+              position: 'bottom',
+            });
+          }
         }
         setLoading(false);
       }
@@ -79,13 +87,19 @@ function ChatWindow() {
         setMessages([...messages, data]);
         setFetch((pre) => !pre);
       } catch (err) {
-        toast({
-          title: 'Error While Sending Messages',
-          status: 'error',
-          duration: 5000,
-          isClosable: true,
-          position: 'bottom',
-        });
+        if (err.response.status === 401) {
+          localStorage.removeItem('user-info');
+          setLoggedIn(false);
+          navigate('/');
+        } else {
+          toast({
+            title: 'Error While Sending Messages',
+            status: 'error',
+            duration: 5000,
+            isClosable: true,
+            position: 'bottom',
+          });
+        }
       }
     }
   };
