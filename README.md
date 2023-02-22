@@ -46,7 +46,7 @@ delete and/or leave conversations and supports profile images.
 
 - Profile Images
 <p align="center">
-    <img src="imgs/profile.gif">
+    <img src="imgs/profile.gif" height="400">
 </p>
 
 ## Getting Started
