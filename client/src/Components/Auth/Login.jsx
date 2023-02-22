@@ -59,6 +59,7 @@ function Login() {
     <VStack spacing="1rem">
       <FormControl isRequired>
         <Input
+          color="black"
           borderColor="#204FA1"
           type="email"
           placeholder="Email"

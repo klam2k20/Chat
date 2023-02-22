@@ -44,12 +44,12 @@ function GroupModal({ children, chat }) {
 
   const removeUserFromGroup = async (removeUserId) => {
     try {
-      const { data } = await removeFromGroup(
+      await removeFromGroup(
         user.token,
         chat._id,
         removeUserId,
       );
-      setSelectedChat(data);
+      setSelectedChat(null);
       setFetch(!fetch);
     } catch (err) {
       if (err.response.status === 401) {

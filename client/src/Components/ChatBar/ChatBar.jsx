@@ -65,6 +65,7 @@ function ChatBarDisplay({ search, handleSearch, result, chats, selectedChat }) {
       gap="0.5rem"
       h="100%"
       w="30%"
+      minW="30%"
       borderRight={{
         base: '0',
         md: '1px',
