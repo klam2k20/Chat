@@ -1,54 +1,89 @@
 <p align="center">
-    <img src="imgs/demo.gif">
+    <img src="imgs/demo.gif" height="500">
 </p>
 
 ## Overview
 
-This is a responsive Chat App created with ReactJS, MongoDB, Express and NodeJS.
-The app supports real-time messaging for individual and group chats, due to
-Socket.io. In group situations, users can add and remove members from a group,
-as well as, rename the chat.
+This is a responsive Chat Application. The application supports real-time messaging in individual
+and group settings, allows users to remove and/or add participants into conversations,
+delete and/or leave conversations and supports profile images.
 
-The application was designed to be responsive for various device sizes as seen below: <br> <br>
-<img src="imgs/chat-sm.png" height=500> &nbsp;
-<img src="imgs/chat-md.png" height=500>
-<img src="imgs/chat-lg.png" height=500>
+## Technology
+
+- <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=for-the-badge&logo=mongodb&logoColor=white">
+- <img src="https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white">
+- <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB">
+- <img src="https://img.shields.io/badge/Node.js-339933?style=for-the-badge&logo=nodedotjs&logoColor=white">
+- <img src="https://img.shields.io/badge/Chakra--UI-319795?style=for-the-badge&logo=chakra-ui&logoColor=white">
+
+## Features
+
+- Responsive Design
+<p align="center">
+    <img src="imgs/responsive.gif" height="400">
+</p>
+
+- Login and Signup Capability
+<p align="center">
+    <img src="imgs/signup.gif" height="400">
+    <img src="imgs/login.gif" height="400">
+</p>
+
+- Group Conversations
+<p align="center">
+    <img src="imgs/demo.gif" height="400">
+</p>
+
+- Edit Group Conversation Participants
+<p align="center">
+    <img src="imgs/edit-conversation.gif" height="400">
+</p>
+
+- Leave Group Conversation and Delete Conversation
+<p align="center">
+    <img src="imgs/delete-conversation.gif" height="400">
+</p>
+
+- Profile Images
+<p align="center">
+    <img src="imgs/profile.gif">
+</p>
 
 ## Getting Started
 
 ### Prerequisites
 
-- yarn
-  ```sh
-  npm install -g yarn
-  ```
+- yarn/npm
 - Sign up for MongoDB Atlas
   - Create a shared database
 
-### Installation
+#### Backend Installation
 
-1. Clone the repo
-   ```sh
-   git clone https://github.com/klam2k20/Chat.git
-   ```
-2. `cd Chat/server`
-3. Create `config.env` with your MongoDB URI
-   ```sh
-   PORT=8080
-   MONG0DB_URI=<MONGODBURI>
-   JWT_SECRET=<SECRET-KEY>
-   ```
-4. Install yarn packages
-   ```sh
-   yarn install
-   ```
-5. Start backend
-   ```sh
-   yarn start
-   ```
-6. `cd ../client`
-7. Install yarn packages
-8. Start frontend on port 3000
-   ```sh
-   yarn start
-   ```
+```sh
+# Clone the repo
+git clone git clone https://github.com/klam2k20/Chat.git
+
+# Create config.env
+cd Chat/server
+PORT=8080
+MONG0DB_URI=<MONGODBURI>
+JWT_SECRET=<SECRET-KEY>
+
+# Install dependencies
+yarn install
+
+# Start the server
+yarn start
+```
+
+#### Frontend Installation
+
+```sh
+cd ../client
+
+# Install dependencies
+yarn install
+
+# Start the application on port 3000
+yarn start
+```
