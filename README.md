@@ -57,7 +57,7 @@ delete and/or leave conversations and supports profile images.
 - Sign up for MongoDB Atlas
   - Create a shared database
 
-#### Backend Installation
+### Backend Installation
 
 ```sh
 # Clone the repo
@@ -76,7 +76,7 @@ yarn install
 yarn start
 ```
 
-#### Frontend Installation
+### Frontend Installation
 
 ```sh
 cd ../client
